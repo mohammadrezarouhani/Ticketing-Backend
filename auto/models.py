@@ -35,7 +35,7 @@ class Ticket(models.Model):
 
 
 class TicketMessage(models.Model):
-    letter=models.ForeignKey(Ticket,on_delete=models.CASCADE)
+    ticket=models.ForeignKey(Ticket,on_delete=models.CASCADE,related_name='ticket_message')
     title=models.CharField(max_length=255)
     discription=models.TextField()
     create_at=models.DateTimeField(auto_now=True)
@@ -48,11 +48,12 @@ class TicketHistory(models.Model):
     created_at=models.DateTimeField(auto_now=True)
 
 
+
 def get_image_path(model,filename):
     return os.path.join('content_file',str(uuid.uuid4())+pathlib.Path(filename).suffix)
 
 class FileUpload(models.Model):
-    letter=models.ForeignKey(TicketMessage,on_delete=models.CASCADE)
+    ticket_message=models.ForeignKey(TicketMessage,on_delete=models.CASCADE,related_name='file_upload')
     image=models.FileField(upload_to=get_image_path)
     created_at=models.DateTimeField(auto_now=True)
 
