@@ -18,15 +18,15 @@ class DepartmanSerializer(serializers.ModelSerializer):
 
 class FileUploadserializer(serializers.ModelSerializer):
     class Meta:
-        fields=['id','letter','image','created_at']
-        models=models.FileUpload
+        fields=['id','ticket_message','image','created_at']
+        model=models.FileUpload
 
 
 class TicketMessageSerializer(serializers.ModelSerializer):
     file_upload=FileUploadserializer(many=True)
 
     class Meta:
-        fields=['id','letter','title','discription','created_at','file_upload']
+        fields=['id','ticket','title','discription','created_at','file_upload']
         model=models.TicketMessage
 
     def create(self, validated_data):
@@ -49,11 +49,10 @@ class TicketMessageSerializer(serializers.ModelSerializer):
 
     
 class TicketSerializer(serializers.ModelSerializer):
-    ticket_message=models.TicketMessage(many=True)
 
     class Meta:
         model=models.Ticket
-        fields=['id','title','discription','priority','sender','receiver','departman','created_at','updated_at','ticket_message']
+        fields=['id','title','discription','priority','sender','reciever','departman','created_at','updated_at']
 
     def create(self, validated_data):
         ticket_message=validated_data.pop('ticket_message')

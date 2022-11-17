@@ -5,9 +5,11 @@ import os,pathlib,uuid,random,string
 
 class BaseUser(AbstractUser):
     email=models.EmailField(unique=True)
-    # image=models.ImageField(default='def.jpg',upload_to='user_photo')
-    is_staff=models.BooleanField(default=True)
-
+    image=models.ImageField(default='def.jpg',upload_to='user_photo')
+    is_staff=models.BooleanField(default=False)
+    is_superuser=models.BooleanField(default=False)
+    departman=models.ForeignKey('Departman',on_delete=models.SET_NULL,null=True,blank=True)
+    
     USERNAME_FIELD='email'
     REQUIRED_FIELDS=['username']
 
@@ -15,7 +17,6 @@ class BaseUser(AbstractUser):
 class Departman(models.Model):
     title=models.CharField(max_length=255)
     discription=models.TextField(null=True,blank=True)
-    user=models.ForeignKey(BaseUser,on_delete=models.CASCADE)
 
 
 class Ticket(models.Model):
@@ -38,7 +39,7 @@ class TicketMessage(models.Model):
     ticket=models.ForeignKey(Ticket,on_delete=models.CASCADE,related_name='ticket_message')
     title=models.CharField(max_length=255)
     discription=models.TextField()
-    create_at=models.DateTimeField(auto_now=True)
+    created_at=models.DateTimeField(auto_now=True)
 
 
 class TicketHistory(models.Model):
