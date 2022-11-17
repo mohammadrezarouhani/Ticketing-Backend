@@ -16,6 +16,12 @@ class DepartmanSerializer(serializers.ModelSerializer):
         model=models.Departman
 
 
+class TicketHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        fields='__all__'
+        model=models.TicketHistory
+
+
 class FileUploadserializer(serializers.ModelSerializer):
     class Meta:
         fields=['id','ticket_message','image','created_at']
@@ -54,20 +60,3 @@ class TicketSerializer(serializers.ModelSerializer):
         model=models.Ticket
         fields=['id','title','discription','priority','sender','reciever','departman','created_at','updated_at']
 
-    def create(self, validated_data):
-        ticket_message=validated_data.pop('ticket_message')
-        ticket=models.Ticket.objects.create(**validated_data)
-        for data in ticket_message:
-            models.TicketMessage.objects.create(**data,ticket=ticket)
-
-        return ticket
-
-    def update(self, instance, validated_data):
-        ticket_message=validated_data.pop('ticket_message')
-        ticket=super().update(instance, validated_data)
-        models.TicketMessage.objects.filter(ticket=ticket).delete()
-
-        for data in ticket_message:
-            models.TicketMessage.objects.create(**data,ticket=ticket)
-            
-        return ticket
