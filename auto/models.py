@@ -3,7 +3,14 @@ from django.contrib.auth.models import AbstractUser
 import os,pathlib,uuid,random,string
 
 
+def get_random_id():
+    id=random.choices(string.ascii_letters+string.digits,k=8)
+    random.shuffle(id)
+    return ''.join(id)
+
 class BaseUser(AbstractUser):
+    id=models.CharField(max_length=15,default=get_random_id
+                        ,primary_key=True,unique=True,editable=False)
     RANK=[
         ('MAN','MANAGER'),
         ('SUP','SUPERWISER'),
@@ -26,6 +33,8 @@ class BaseUser(AbstractUser):
 
 
 class Departman(models.Model):
+    id=models.CharField(max_length=15,default=get_random_id
+                        ,primary_key=True,unique=True,editable=False)
     title=models.CharField(max_length=255)
     discription=models.TextField(null=True,blank=True)
 
@@ -36,6 +45,8 @@ class Ticket(models.Model):
     MEDIUM=('M','MIDIUM')
     LOW=('L','LOW')
 
+    id=models.CharField(max_length=15,default=get_random_id
+                        ,primary_key=True,unique=True,editable=False)
     title=models.CharField(max_length=255)
     discription=models.TextField()
     priority=models.CharField(max_length=115,choices=PRIORITY,default=MEDIUM)
@@ -44,12 +55,17 @@ class Ticket(models.Model):
     created_at=models.DateTimeField(auto_now=True)
     updated_at=models.DateTimeField(null=True,blank=True)
 
+    class Meta:
+        ordering=['-created_at']
+
 
 class TicketMessage(models.Model):
     STATUS=[('SN','SEEN'),('US','UNSEEN')]
     SEEN=('SN','SEEN')
     UNSEEN=('US','UNSEEN')
 
+    id=models.CharField(max_length=15,default=get_random_id
+                        ,primary_key=True,unique=True,editable=False)
     ticket=models.ForeignKey(Ticket,on_delete=models.CASCADE,related_name='ticket_message')
     sender=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='sender')
     reciever=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='reciever')
@@ -61,6 +77,8 @@ class TicketMessage(models.Model):
 
 
 class TicketHistory(models.Model):
+    id=models.CharField(max_length=15,default=get_random_id
+                        ,primary_key=True,unique=True,editable=False)
     ticket=models.ForeignKey(Ticket,on_delete=models.CASCADE)
     owner=models.ForeignKey(BaseUser,on_delete=models.CASCADE)
     departman=models.ForeignKey(Departman,on_delete=models.CASCADE)
