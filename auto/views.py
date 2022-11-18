@@ -42,3 +42,10 @@ class TicketMessageViewSet(ModelViewSet):
 class TicketHistoryViewSet(ModelViewSet):
     serializer_class=serializer.TicketHistorySerializer
     queryset=models.TicketHistory.objects.all()
+
+    def get_queryset(self):
+        data=super().get_queryset()
+        ticket_id=self.request.query_params.get('ticket','')
+        if ticket_id:
+            data.filter(ticket_id=ticket_id)
+            return data
