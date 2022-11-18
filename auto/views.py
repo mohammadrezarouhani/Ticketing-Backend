@@ -49,3 +49,10 @@ class TicketHistoryViewSet(ModelViewSet):
         if ticket_id:
             data.filter(ticket_id=ticket_id)
             return data
+
+
+class DepartmanViewSet(ModelViewSet):
+    http_method_names=['get']
+
+    serializer_class=serializer.DepartmanSerializer
+    queryset=models.Departman.objects.all()

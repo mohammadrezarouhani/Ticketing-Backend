@@ -5,6 +5,8 @@ from . import views
 ticket_router=DefaultRouter()
 ticket_router.register('',views.TicketViewSet)
 
+departman_router=DefaultRouter()
+departman_router.register('',views.DepartmanViewSet)
 
 ticket_message_router=DefaultRouter()
 ticket_message_router.register('',views.TicketMessageViewSet)
@@ -15,6 +17,9 @@ ticket_history.register('',views.TicketHistoryViewSet)
 urlpatterns=[
     path('ticket/',include(ticket_router.urls)),
     path('ticket/<str:pk>/',include(ticket_router.urls)),
+
+
+    path('departman/',include(departman_router.urls)),
 
     path('ticket-message/',include(ticket_message_router.urls)),
     path('ticket-message/<str:pk>/',include(ticket_message_router.urls)),
