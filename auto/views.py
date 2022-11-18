@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.contrib.auth.password_validation import validate_password
+from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
-from django.db.models import Q
+from rest_framework import generics,status
+from rest_framework.response import Response
 from . import serializer
 from . import models
 import pdb
@@ -56,3 +58,32 @@ class DepartmanViewSet(ModelViewSet):
 
     serializer_class=serializer.DepartmanSerializer
     queryset=models.Departman.objects.all()
+
+
+class ChangePasswordViewSet(ModelViewSet):
+    serializer_class=serializer.ChangePasswordSerializer
+    model=models.BaseUser
+
+    def get_object(self):
+        return get_object_or_404(models.BaseUser,pk=self.kwargs['pk'])
+
+
+    def update(self, request, *args, **kwargs):
+        serializer=self.get_serializer(data=request.data)
+        user=self.get_object()
+
+        if serializer.is_valid():
+            
+            if not user.check_password(serializer.data.get('old_password')):
+                return Response(data={'password':'old password is wrong!'},status=status.HTTP_204_NO_CONTENT)
+            try:
+                validate_password(serializer.data.get('new_password'))
+            except Exception as ex:
+                return Response(data={'password':ex},status=status.HTTP_406_NOT_ACCEPTABLE)
+
+            user.set_password(serializer.data.get('new_password'))
+            user.save()
+            return Response(serializer.data,status=status.HTTP_200_OK)
+
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    

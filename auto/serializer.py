@@ -63,3 +63,8 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Ticket
         fields = '__all__'
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password=serializers.CharField(max_length=115)
+    new_password=serializers.CharField(max_length=115)

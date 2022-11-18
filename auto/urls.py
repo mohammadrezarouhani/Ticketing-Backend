@@ -14,12 +14,17 @@ ticket_message_router.register('',views.TicketMessageViewSet)
 ticket_history=DefaultRouter()
 ticket_history.register('',views.TicketHistoryViewSet)
 
+change_password_router=DefaultRouter()
+change_password_router.register('',views.ChangePasswordViewSet)
+
 urlpatterns=[
     path('ticket/',include(ticket_router.urls)),
     path('ticket/<str:pk>/',include(ticket_router.urls)),
 
 
     path('departman/',include(departman_router.urls)),
+
+    path('change-password/<str:pk>/',include(change_password_router.urls)),
 
     path('ticket-message/',include(ticket_message_router.urls)),
     path('ticket-message/<str:pk>/',include(ticket_message_router.urls)),

@@ -31,6 +31,8 @@ class BaseUser(AbstractUser):
     USERNAME_FIELD='email'
     REQUIRED_FIELDS=['username']
 
+    def __str__(self) -> str:
+        return self.email+"({})".format(self.id)
 
 class Departman(models.Model):
     id=models.CharField(max_length=15,default=get_random_id
