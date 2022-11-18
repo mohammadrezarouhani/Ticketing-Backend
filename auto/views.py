@@ -60,7 +60,7 @@ class DepartmanViewSet(ModelViewSet):
     queryset=models.Departman.objects.all()
 
 
-class ChangePasswordViewSet(ModelViewSet):
+class ChangePasswordView(generics.UpdateAPIView):
     serializer_class=serializer.ChangePasswordSerializer
     model=models.BaseUser
 

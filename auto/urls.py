@@ -21,7 +21,7 @@ urlpatterns=[
 
     path('departman/',include(departman_router.urls)),
 
-    path('change-password/<str:pk>/',views.ChangePasswordViewSet.as_view()),
+    path('change-password/<str:pk>/',views.ChangePasswordView.as_view()),
 
     path('ticket-message/',include(ticket_message_router.urls)),
     path('ticket-message/<str:pk>/',include(ticket_message_router.urls)),
