@@ -4,11 +4,22 @@ import os,pathlib,uuid,random,string
 
 
 class BaseUser(AbstractUser):
+    RANK=[
+        ('MAN','MANAGER'),
+        ('SUP','SUPERWISER'),
+        ('STF','STAFF')
+    ]
+    MANAGER=('MAN','MANAGER')
+    SUPERWISER=('SUP','SUPERWISER')
+    STAFF=('STF','STAFF')
+
+    departman=models.ForeignKey('Departman',on_delete=models.SET_NULL,null=True)
     email=models.EmailField(unique=True)
-    image=models.ImageField(default='def.jpg',upload_to='user_photo')
+    rank=models.CharField(max_length=115,choices=RANK)
+    has_message=models.PositiveIntegerField(default=0)
     is_staff=models.BooleanField(default=False)
     is_superuser=models.BooleanField(default=False)
-    departman=models.ForeignKey('Departman',on_delete=models.SET_NULL,null=True,blank=True)
+    image=models.ImageField(default='def.jpg',upload_to='user_photo')
     
     USERNAME_FIELD='email'
     REQUIRED_FIELDS=['username']
@@ -28,18 +39,25 @@ class Ticket(models.Model):
     title=models.CharField(max_length=255)
     discription=models.TextField()
     priority=models.CharField(max_length=115,choices=PRIORITY,default=MEDIUM)
-    sender=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='sender')
-    reciever=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='reciever')
-    departman=models.ForeignKey(Departman,on_delete=models.SET_NULL,null=True,blank=True)
+    owner=models.ForeignKey(BaseUser,on_delete=models.CASCADE)
+    departman=models.ForeignKey(Departman,on_delete=models.SET_NULL,null=True)
     created_at=models.DateTimeField(auto_now=True)
     updated_at=models.DateTimeField(null=True,blank=True)
 
 
 class TicketMessage(models.Model):
+    STATUS=[('SN','SEEN'),('US','UNSEEN')]
+    SEEN=('SN','SEEN')
+    UNSEEN=('US','UNSEEN')
+
     ticket=models.ForeignKey(Ticket,on_delete=models.CASCADE,related_name='ticket_message')
+    sender=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='sender')
+    reciever=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='reciever')
     title=models.CharField(max_length=255)
     discription=models.TextField()
+    status=models.CharField(max_length=115,choices=STATUS)
     created_at=models.DateTimeField(auto_now=True)
+    updated_at=models.DateTimeField(null=True,blank=True)
 
 
 class TicketHistory(models.Model):
@@ -48,6 +66,8 @@ class TicketHistory(models.Model):
     departman=models.ForeignKey(Departman,on_delete=models.CASCADE)
     created_at=models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering=['-created_at']
 
 
 def get_image_path(model,filename):
