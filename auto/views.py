@@ -4,13 +4,13 @@ from django.db.models import Q
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import generics,status
 from rest_framework.response import Response
-from .permissions import TicketPermission
+from . import permissions
 from . import serializer
 from . import models
 import pdb
 
 class TicketViewSet(ModelViewSet):
-    permission_classes=[TicketPermission,]
+    permission_classes=[permissions.TicketPermission,]
     serializer_class=serializer.TicketSerializer
     queryset=models.Ticket.objects.all()
 
@@ -30,13 +30,12 @@ class TicketViewSet(ModelViewSet):
 
 
 class TicketMessageViewSet(ModelViewSet):
-    permission_classes=[]
+    permission_classes=[permissions.TicketMessagePermission]
     serializer_class=serializer.TicketMessageSerializer
     queryset=models.TicketMessage.objects.all()
 
     def get_queryset(self):
         data =super().get_queryset() 
-
         ticket_id=self.request.query_params.get('ticket','')
 
         if ticket_id:
