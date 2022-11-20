@@ -1,33 +1,36 @@
 from django.contrib.auth.password_validation import validate_password
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import generics,status
 from rest_framework.response import Response
+from .permissions import TicketPermission
 from . import serializer
 from . import models
 import pdb
 
 class TicketViewSet(ModelViewSet):
+    permission_classes=[TicketPermission,]
     serializer_class=serializer.TicketSerializer
     queryset=models.Ticket.objects.all()
 
-    def get_queryset(self):
-        data =super().get_queryset() 
+
+    def list(self, request, *args, **kwargs):
+        data =self.get_queryset()
 
         owner_id=self.request.query_params.get('owner','')
         departman_id=self.request.query_params.get('departman','')
 
-        if owner_id:
-            data=data.filter(owner__id=owner_id)
-
-        if departman_id:
-            data=data.filter(departman__id=departman_id)
-
         if owner_id or departman_id:
-            return data
+            data=data.filter(Q(owner__id=owner_id)|Q(departman__id=departman_id))
+            sre=self.get_serializer(data,many=True)
+            return Response(data=sre.data,status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TicketMessageViewSet(ModelViewSet):
+    permission_classes=[]
     serializer_class=serializer.TicketMessageSerializer
     queryset=models.TicketMessage.objects.all()
 
@@ -87,3 +90,4 @@ class ChangePasswordView(generics.UpdateAPIView):
 
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
+
