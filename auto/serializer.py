@@ -6,7 +6,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.BaseUser
-        fields = '__all__'
+        fields = ['id','first_name','last_name','username','email','password','departman','rank']
 
 
 class DepartmanSerializer(serializers.ModelSerializer):

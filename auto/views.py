@@ -1,19 +1,36 @@
 from django.contrib.auth.password_validation import validate_password
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from rest_framework.viewsets import ModelViewSet
-from rest_framework import generics,status
+from rest_framework.viewsets import ModelViewSet,GenericViewSet
+from rest_framework import generics,status,mixins
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from . import permissions
 from . import serializer
 from . import models
 import pdb
 
+
+class UserViewSet(mixins.CreateModelMixin,
+                mixins.RetrieveModelMixin,
+                mixins.UpdateModelMixin,
+                mixins.DestroyModelMixin,
+                GenericViewSet):
+
+    serializer_class=serializer.BaseUserSerializer
+    queryset=models.BaseUser.objects.all()
+    
+    def get_permissions(self):
+        if not self.request.method == 'POST':
+            self.permission_classes=[IsAuthenticated,]
+        
+        return super().get_permissions()
+
+
 class TicketViewSet(ModelViewSet):
-    permission_classes=[permissions.TicketPermission,]
+    permission_classes=[IsAuthenticated,permissions.TicketPermission]
     serializer_class=serializer.TicketSerializer
     queryset=models.Ticket.objects.all()
-
 
     def list(self, request, *args, **kwargs):
         data =self.get_queryset()
@@ -21,7 +38,7 @@ class TicketViewSet(ModelViewSet):
         owner_id=self.request.query_params.get('owner','')
         departman_id=self.request.query_params.get('departman','')
 
-        if owner_id or departman_id:
+        if owner_id or departman_id: # we can also check if a user is owner in here
             data=data.filter(Q(owner__id=owner_id)|Q(departman__id=departman_id))
             sre=self.get_serializer(data,many=True)
             return Response(data=sre.data,status=status.HTTP_200_OK)
@@ -30,29 +47,39 @@ class TicketViewSet(ModelViewSet):
 
 
 class TicketMessageViewSet(ModelViewSet):
-    permission_classes=[permissions.TicketMessagePermission]
+    permission_classes=[IsAuthenticated,permissions.TicketMessagePermission]
     serializer_class=serializer.TicketMessageSerializer
     queryset=models.TicketMessage.objects.all()
 
-    def get_queryset(self):
-        data =super().get_queryset() 
+    def list(self, request, *args, **kwargs):
+        data =self.get_queryset()
+
         ticket_id=self.request.query_params.get('ticket','')
 
         if ticket_id:
             data=data.filter(ticket__id=ticket_id)
-            return data
+            sre=self.get_serializer(data,many=True)
+            return Response(data=sre.data,status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TicketHistoryViewSet(ModelViewSet):
+    permission_classes=[IsAuthenticated,permissions.TicketHistoryPermission]
     serializer_class=serializer.TicketHistorySerializer
     queryset=models.TicketHistory.objects.all()
 
-    def get_queryset(self):
-        data=super().get_queryset()
+    def list(self, request, *args, **kwargs):
+        data =self.get_queryset()
+
         ticket_id=self.request.query_params.get('ticket','')
+
         if ticket_id:
-            data.filter(ticket_id=ticket_id)
-            return data
+            data=data.filter(ticket__id=ticket_id)
+            sre=self.get_serializer(data,many=True)
+            return Response(data=sre.data,status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class DepartmanViewSet(ModelViewSet):
@@ -68,7 +95,6 @@ class ChangePasswordView(generics.UpdateAPIView):
 
     def get_object(self):
         return get_object_or_404(models.BaseUser,pk=self.kwargs['pk'])
-
 
     def update(self, request, *args, **kwargs):
         serializer=self.get_serializer(data=request.data)
