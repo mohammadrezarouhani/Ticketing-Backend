@@ -1,12 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import os,pathlib,uuid,random,string
+import os,pathlib,uuid,random,string,pdb
 
 
 def get_random_id():
     id=random.choices(string.ascii_letters+string.digits,k=8)
     random.shuffle(id)
     return ''.join(id)
+
+def get_image_path(model,filename):
+    folder_name= 'user_photo' if isinstance(model,BaseUser) else 'content_file'
+    return os.path.join(folder_name,str(uuid.uuid4())+pathlib.Path(filename).suffix)
+
 
 class BaseUser(AbstractUser):
     id=models.CharField(max_length=15,default=get_random_id
@@ -26,7 +31,7 @@ class BaseUser(AbstractUser):
     has_message=models.PositiveIntegerField(default=0)
     is_staff=models.BooleanField(default=False)
     is_superuser=models.BooleanField(default=False)
-    image=models.ImageField(default='def.jpg',upload_to='user_photo')
+    image=models.ImageField(default='def.jpg',upload_to=get_image_path)
     
     USERNAME_FIELD='email'
     REQUIRED_FIELDS=['username']
@@ -89,9 +94,6 @@ class TicketHistory(models.Model):
     class Meta:
         ordering=['-created_at']
 
-
-def get_image_path(model,filename):
-    return os.path.join('content_file',str(uuid.uuid4())+pathlib.Path(filename).suffix)
 
 class FileUpload(models.Model):
     ticket_message=models.ForeignKey(TicketMessage,on_delete=models.CASCADE,related_name='file_upload')

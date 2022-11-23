@@ -1,15 +1,12 @@
 from django.contrib.auth.password_validation import validate_password
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from rest_framework.viewsets import ModelViewSet,GenericViewSet
 from rest_framework import generics,status,mixins
+from rest_framework.viewsets import ModelViewSet,GenericViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from . import permissions
-from . import serializer
-from . import models
+from . import permissions,serializer,models
 import pdb
-
 
 class UserViewSet(mixins.CreateModelMixin,
                 mixins.RetrieveModelMixin,
@@ -23,8 +20,14 @@ class UserViewSet(mixins.CreateModelMixin,
     def get_permissions(self):
         if not self.request.method == 'POST':
             self.permission_classes=[IsAuthenticated,]
-        
         return super().get_permissions()
+
+    def create(self,request,*args,**kwargs):
+        user=models.BaseUser.objects.create(**request.data)
+        user.set_password(request.data.get('password'))
+        user.save()
+        pdb.set_trace()
+        return Response(request.data,status=status.HTTP_201_CREATED)
 
 
 class TicketViewSet(ModelViewSet):
@@ -38,12 +41,13 @@ class TicketViewSet(ModelViewSet):
         owner_id=self.request.query_params.get('owner','')
         departman_id=self.request.query_params.get('departman','')
 
-        if owner_id or departman_id: # we can also check if a user is owner in here
+        if (owner_id or departman_id) :
             data=data.filter(Q(owner__id=owner_id)|Q(departman__id=departman_id))
             sre=self.get_serializer(data,many=True)
             return Response(data=sre.data,status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 class TicketMessageViewSet(ModelViewSet):
@@ -56,7 +60,7 @@ class TicketMessageViewSet(ModelViewSet):
 
         ticket_id=self.request.query_params.get('ticket','')
 
-        if ticket_id:
+        if ticket_id :
             data=data.filter(ticket__id=ticket_id)
             sre=self.get_serializer(data,many=True)
             return Response(data=sre.data,status=status.HTTP_200_OK)
