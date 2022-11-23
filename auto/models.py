@@ -75,7 +75,7 @@ class TicketMessage(models.Model):
                         ,primary_key=True,unique=True,editable=False)
     ticket=models.ForeignKey(Ticket,on_delete=models.CASCADE,related_name='ticket_message')
     sender=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='sender')
-    reciever=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='reciever')
+    receiver=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='reciever')
     title=models.CharField(max_length=255)
     discription=models.TextField()
     status=models.CharField(max_length=115,choices=STATUS)

@@ -33,6 +33,7 @@ urlpatterns=[
 
     path('ticket-message/',include(ticket_message_router.urls)),
     path('ticket-message/<str:pk>/',include(ticket_message_router.urls)),
+    path('message-status/<str:pk>/',views.MessageStatusView.as_view()),
 
     path('ticket-history/',include(ticket_history.urls)),
     path('ticket-history/<int:pk>/',include(ticket_history.urls)),

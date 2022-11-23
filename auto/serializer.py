@@ -68,3 +68,8 @@ class TicketSerializer(serializers.ModelSerializer):
 class ChangePasswordSerializer(serializers.Serializer):
     old_password=serializers.CharField(max_length=115)
     new_password=serializers.CharField(max_length=115)
+
+
+class MessageStatusSerializer(serializers.Serializer):
+    message_id=serializers.CharField()
+    date=serializers.DateTimeField()

@@ -120,3 +120,22 @@ class ChangePasswordView(generics.UpdateAPIView):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
 
+class MessageStatusView(generics.UpdateAPIView):
+    permission_classes=[IsAuthenticated]
+    serializer_class=serializer.MessageStatusSerializer
+    model=models.BaseUser
+
+    def update(self, request, *args, **kwargs):
+        message_id=request.data.get('message_id')
+        user_id=self.kwargs.get('pk')
+
+        if user_id == request.user.id:
+            message_obj=get_object_or_404(models.TicketMessage,id=message_id)
+            user_obj=get_object_or_404(models.BaseUser,id=user_id)
+            if message_obj.status=='US':
+                user_obj.has_message -=1
+                message_obj.status='SN'
+                user_obj.save()
+                message_obj.save()
+                
+            return Response(status=status.HTTP_400_BAD_REQUEST)
