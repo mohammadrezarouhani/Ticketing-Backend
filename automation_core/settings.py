@@ -49,14 +49,20 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+
+    'DEFAULT_SCHEMA_CLASS':(
+        'rest_framework.schemas.coreapi.AutoSchema',
+    ),
 }
 
+REST_FRAMEWORK = {'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema' }
 
-JWT={
+SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME':timedelta(hours=24),
     'REFRESH_TOKEN_LIFETIME':timedelta(days=7)
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

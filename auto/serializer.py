@@ -32,7 +32,7 @@ class TicketMessageSerializer(serializers.ModelSerializer):
     file_upload = FileUploadserializer(many=True)
 
     class Meta:
-        fields = ['id', 'ticket', 'sender', 'reciever', 'title',
+        fields = ['id', 'ticket', 'sender', 'receiver', 'title',
                   'discription', 'status','created_at','updated_at', 'file_upload']
         model = models.TicketMessage
 

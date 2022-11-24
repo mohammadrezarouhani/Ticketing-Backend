@@ -39,6 +39,7 @@ class BaseUser(AbstractUser):
     def __str__(self) -> str:
         return self.email+"({})".format(self.id)
 
+
 class Departman(models.Model):
     id=models.CharField(max_length=15,default=get_random_id
                         ,primary_key=True,unique=True,editable=False)

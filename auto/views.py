@@ -26,7 +26,6 @@ class UserViewSet(mixins.CreateModelMixin,
         user=models.BaseUser.objects.create(**request.data)
         user.set_password(request.data.get('password'))
         user.save()
-        pdb.set_trace()
         return Response(request.data,status=status.HTTP_201_CREATED)
 
 
@@ -132,6 +131,7 @@ class MessageStatusView(generics.UpdateAPIView):
         if user_id == request.user.id:
             message_obj=get_object_or_404(models.TicketMessage,id=message_id)
             user_obj=get_object_or_404(models.BaseUser,id=user_id)
+            
             if message_obj.status=='US':
                 user_obj.has_message -=1
                 message_obj.status='SN'
