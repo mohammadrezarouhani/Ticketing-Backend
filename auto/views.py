@@ -6,27 +6,26 @@ from rest_framework.viewsets import ModelViewSet,GenericViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from . import permissions,serializer,models
-import pdb
 
-class UserViewSet(mixins.CreateModelMixin,
-                mixins.RetrieveModelMixin,
-                mixins.UpdateModelMixin,
-                mixins.DestroyModelMixin,
-                GenericViewSet):
+
+class UserViewSet(ModelViewSet):
 
     serializer_class=serializer.BaseUserSerializer
     queryset=models.BaseUser.objects.all()
-    
+
     def get_permissions(self):
         if not self.request.method == 'POST':
             self.permission_classes=[IsAuthenticated,]
         return super().get_permissions()
 
     def create(self,request,*args,**kwargs):
-        user=models.BaseUser.objects.create(**request.data)
-        user.set_password(request.data.get('password'))
-        user.save()
-        return Response(request.data,status=status.HTTP_201_CREATED)
+        sre=self.get_serializer(data=request.data)
+
+        if(sre.is_valid()):
+            sre.save()
+            return Response(sre.data,status=status.HTTP_201_CREATED)
+        
+        return Response(sre.errors,status=status.HTTP_201_CREATED)
 
 
 class TicketViewSet(ModelViewSet):
@@ -48,7 +47,6 @@ class TicketViewSet(ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
 class TicketMessageViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated,permissions.TicketMessagePermission]
     serializer_class=serializer.TicketMessageSerializer
@@ -56,7 +54,6 @@ class TicketMessageViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         data =self.get_queryset()
-
         ticket_id=self.request.query_params.get('ticket','')
 
         if ticket_id :
@@ -87,7 +84,8 @@ class TicketHistoryViewSet(ModelViewSet):
 
 class DepartmanViewSet(ModelViewSet):
     http_method_names=['get']
-
+    permission_classes=[IsAuthenticated,]
+    
     serializer_class=serializer.DepartmanSerializer
     queryset=models.Departman.objects.all()
 

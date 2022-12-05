@@ -22,6 +22,7 @@ ticket_history.register('',views.TicketHistoryViewSet)
 urlpatterns=[
     path('token-obtain/',TokenObtainPairView.as_view(),name='token-obtain'),
     path('token-refresh/',TokenRefreshView.as_view(),name='token-refresh'),
+    
     path('user/',include(user_router.urls)),
     path('user/<str:pk>/',include(user_router.urls)),
     path('change-password/<str:pk>/',views.ChangePasswordView.as_view()),
@@ -34,7 +35,7 @@ urlpatterns=[
     path('ticket-message/',include(ticket_message_router.urls)),
     path('ticket-message/<str:pk>/',include(ticket_message_router.urls)),
     path('message-status/<str:pk>/',views.MessageStatusView.as_view()),
-
+    
     path('ticket-history/',include(ticket_history.urls)),
     path('ticket-history/<int:pk>/',include(ticket_history.urls)),
 ]

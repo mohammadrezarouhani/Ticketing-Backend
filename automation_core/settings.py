@@ -56,7 +56,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-REST_FRAMEWORK = {'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema' }
+REST_FRAMEWORK.update({'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema' })
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME':timedelta(hours=24),

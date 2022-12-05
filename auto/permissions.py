@@ -10,7 +10,7 @@ class TicketPermission(permissions.BasePermission):
 class TicketMessagePermission(permissions.BasePermission):
     
     def has_object_permission(self, request, view, obj):
-        return obj.reciver==request.user or obj.sender== request.user
+        return obj.receiver==request.user or obj.sender== request.user
 
 
 class TicketHistoryPermission(permissions.BasePermission):

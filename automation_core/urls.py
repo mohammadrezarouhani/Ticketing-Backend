@@ -25,7 +25,7 @@ urlpatterns = [
     path('auto/', include('auto.urls')),
 ]
 
-django_swagger_urlpatterns=[
+django_doc_urlpatterns=[
     path('doc/',include_docs_urls(title="Automation")),
     path('schema',get_schema_view(
         title="Automation App",
@@ -38,4 +38,4 @@ django_swagger_urlpatterns=[
 
 if settings.DEBUG:
     urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
-    urlpatterns.extend(django_swagger_urlpatterns)
+    urlpatterns.extend(django_doc_urlpatterns)

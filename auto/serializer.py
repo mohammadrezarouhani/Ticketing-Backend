@@ -8,6 +8,12 @@ class BaseUserSerializer(serializers.ModelSerializer):
         model = models.BaseUser
         fields = ['id','first_name','last_name','username','email','password','departman','rank']
 
+    def create(self, validated_data):
+        user=models.BaseUser.objects.create(**validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
 
 class DepartmanSerializer(serializers.ModelSerializer):
 
@@ -43,7 +49,6 @@ class TicketMessageSerializer(serializers.ModelSerializer):
         for data in file_upload:
             models.FileUpload.objects.create(
                 **data, ticket_message=ticket_message)
-
         return ticket_message
 
     def update(self, instance, validated_data):
