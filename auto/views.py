@@ -6,6 +6,7 @@ from rest_framework.viewsets import ModelViewSet,GenericViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from . import permissions,serializer,models
+import pdb
 
 
 class UserViewSet(ModelViewSet):
@@ -73,7 +74,7 @@ class TicketHistoryViewSet(ModelViewSet):
         data =self.get_queryset()
 
         ticket_id=self.request.query_params.get('ticket','')
-
+        
         if ticket_id:
             data=data.filter(ticket__id=ticket_id)
             sre=self.get_serializer(data,many=True)
@@ -115,12 +116,13 @@ class ChangePasswordView(generics.UpdateAPIView):
             return Response(serializer.data,status=status.HTTP_200_OK)
 
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    
 
-class MessageStatusView(generics.UpdateAPIView):
+
+class MessageStatusView(generics.UpdateAPIView,):
     permission_classes=[IsAuthenticated]
     serializer_class=serializer.MessageStatusSerializer
     model=models.BaseUser
+
 
     def update(self, request, *args, **kwargs):
         message_id=request.data.get('message_id')
@@ -129,11 +131,13 @@ class MessageStatusView(generics.UpdateAPIView):
         if user_id == request.user.id:
             message_obj=get_object_or_404(models.TicketMessage,id=message_id)
             user_obj=get_object_or_404(models.BaseUser,id=user_id)
-            
+
             if message_obj.status=='US':
                 user_obj.has_message -=1
                 message_obj.status='SN'
                 user_obj.save()
                 message_obj.save()
-                
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+                return Response(status=status.HTTP_200_OK)
+            return Response(data={"status":"message already been seen"},status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(data={"status":"wrong user id or message id"},status=status.HTTP_404_NOT_FOUND)

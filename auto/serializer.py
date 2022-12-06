@@ -6,7 +6,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.BaseUser
-        fields = ['id','first_name','last_name','username','email','password','departman','rank']
+        fields = ['id','has_message','first_name','last_name','username','email','password','departman','rank']
 
     def create(self, validated_data):
         user=models.BaseUser.objects.create(**validated_data)
@@ -35,11 +35,11 @@ class FileUploadserializer(serializers.ModelSerializer):
 
 
 class TicketMessageSerializer(serializers.ModelSerializer):
-    file_upload = FileUploadserializer(many=True)
+    file_upload = FileUploadserializer(many=True,allow_null=True)
 
     class Meta:
         fields = ['id', 'ticket', 'sender', 'receiver', 'title',
-                  'discription', 'status','created_at','updated_at', 'file_upload']
+                  'description', 'status','created_at','updated_at', 'file_upload']
         model = models.TicketMessage
 
     def create(self, validated_data):

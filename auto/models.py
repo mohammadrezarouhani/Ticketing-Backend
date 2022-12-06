@@ -78,7 +78,7 @@ class TicketMessage(models.Model):
     sender=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='sender')
     receiver=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='reciever')
     title=models.CharField(max_length=255)
-    discription=models.TextField()
+    description=models.TextField()
     status=models.CharField(max_length=115,choices=STATUS)
     created_at=models.DateTimeField(auto_now=True)
     updated_at=models.DateTimeField(null=True,blank=True)
@@ -97,7 +97,7 @@ class TicketHistory(models.Model):
 
 
 class FileUpload(models.Model):
-    ticket_message=models.ForeignKey(TicketMessage,on_delete=models.CASCADE,related_name='file_upload')
+    ticket_message=models.ForeignKey(TicketMessage,on_delete=models.CASCADE,related_name='file_upload',blank=True)
     image=models.FileField(upload_to=get_image_path)
     created_at=models.DateTimeField(auto_now=True)
 
