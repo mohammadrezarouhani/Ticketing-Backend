@@ -7,17 +7,21 @@ from . import views
 user_router=DefaultRouter()
 user_router.register('',views.UserViewSet)
 
-ticket_router=DefaultRouter()
-ticket_router.register('',views.TicketViewSet)
+letter_router=DefaultRouter()
+letter_router.register('',views.TicketViewSet)
+
+initial_letter_router=DefaultRouter()
+initial_letter_router.register('',views.InitialTicketViewSet)
 
 departman_router=DefaultRouter()
 departman_router.register('',views.DepartmanViewSet)
 
-ticket_message_router=DefaultRouter()
-ticket_message_router.register('',views.TicketMessageViewSet)
+letter_message_router=DefaultRouter()
+letter_message_router.register('',views.TicketMessageViewSet)
 
-ticket_history=DefaultRouter()
-ticket_history.register('',views.TicketHistoryViewSet)
+letter_history=DefaultRouter()
+letter_history.register('',views.TicketHistoryViewSet)
+
 
 urlpatterns=[
     path('token-obtain/',TokenObtainPairView.as_view(),name='token-obtain'),
@@ -27,15 +31,16 @@ urlpatterns=[
     path('user/<str:pk>/',include(user_router.urls)),
     path('change-password/<str:pk>/',views.ChangePasswordView.as_view()),
 
-    path('ticket/',include(ticket_router.urls)),
-    path('ticket/<str:pk>/',include(ticket_router.urls)),
+    path('letter/',include(letter_router.urls)),
+    path('letter/<str:pk>/',include(letter_router.urls)),
+    path('initial-letter/',include(initial_letter_router.urls)),
 
     path('departman/',include(departman_router.urls)),
 
-    path('ticket-message/',include(ticket_message_router.urls)),
-    path('ticket-message/<str:pk>/',include(ticket_message_router.urls)),
-    path('message-status/<str:pk>/',views.MessageStatusView.as_view()),
+    path('comment/',include(letter_message_router.urls)),
+    path('comment/<str:pk>/',include(letter_message_router.urls)),
+    path('comment-status/<str:pk>/',views.MessageStatusView.as_view()),
     
-    path('ticket-history/',include(ticket_history.urls)),
-    path('ticket-history/<int:pk>/',include(ticket_history.urls)),
+    path('history/',include(letter_history.urls)),
+    path('history/<int:pk>/',include(letter_history.urls)),
 ]

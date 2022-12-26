@@ -22,25 +22,33 @@ class DepartmanSerializer(serializers.ModelSerializer):
         model = models.Departman
 
 
-class TicketHistorySerializer(serializers.ModelSerializer):
+class FileHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model=models.FileHistory
+        fields='__all__'
+
+
+# oeverridong create and update method 
+class History(serializers.ModelSerializer):
+    history_file=FileHistorySerializer(many=True,allow_null=True)
     class Meta:
         fields = '__all__'
         model = models.History
 
 
-class FileUploadserializer(serializers.ModelSerializer):
+class CommentFileserializer(serializers.ModelSerializer):
     class Meta:
-        fields = ['id', 'ticket_message', 'image', 'created_at']
+        fields = ['id', 'comment', 'image', 'created_at']
         model = models.CommentFile
 
 
 class LetterCommentSerializer(serializers.ModelSerializer):
-    comment_file = FileUploadserializer(many=True,allow_null=True)
+    comment_file = CommentFileserializer(many=True,allow_null=True)
 
     class Meta:
         fields = ['id', 'letter', 'sender', 'receiver', 'title',
                   'description', 'status','created_at','updated_at', 'comment_file']
-        model = models.LetterMessage
+        model = models.Comment
 
     def create(self, validated_data):
         file_upload = validated_data.pop('file_upload')
@@ -69,6 +77,13 @@ class LetterSerializer(serializers.ModelSerializer):
         model = models.Letter
         fields = '__all__'
 
+
+class InitialLetterSerializer(serializers.ModelSerializer):
+    comment=CommentFileserializer(many=True)
+    
+    class Meta:
+        fields=['id','priority','owner','departman','comment']
+        model=models.Letter
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password=serializers.CharField(max_length=115)

@@ -6,7 +6,6 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from . import permissions,serializer,models
-import pdb
 
 
 class UserViewSet(ModelViewSet):
@@ -30,6 +29,7 @@ class UserViewSet(ModelViewSet):
 
 
 class TicketViewSet(ModelViewSet):
+    http_method_names=['get','update','delete']
     permission_classes=[IsAuthenticated,permissions.TicketPermission]
     serializer_class=serializer.LetterSerializer
     queryset=models.Letter.objects.all()
@@ -48,14 +48,21 @@ class TicketViewSet(ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class InitialTicketViewSet(ModelViewSet):
+    http_method_names=['post','get']
+    # permission_classes=[IsAuthenticated]
+    serializer_class=serializer.InitialLetterSerializer
+    queryset=models.Letter.objects.all()
+
+
 class TicketMessageViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated,permissions.TicketMessagePermission]
     serializer_class=serializer.LetterCommentSerializer
-    queryset=models.LetterMessage.objects.all()
+    queryset=models.Comment.objects.all()
 
     def list(self, request, *args, **kwargs):
         data =self.get_queryset()
-        ticket_id=self.request.query_params.get('ticket','')
+        ticket_id=self.request.query_params.get('letter','')
 
         if ticket_id :
             data=data.filter(ticket__id=ticket_id)
@@ -67,13 +74,13 @@ class TicketMessageViewSet(ModelViewSet):
 
 class TicketHistoryViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated,permissions.TicketHistoryPermission]
-    serializer_class=serializer.TicketHistorySerializer
+    serializer_class=serializer.History
     queryset=models.History.objects.all()
 
     def list(self, request, *args, **kwargs):
         data =self.get_queryset()
 
-        ticket_id=self.request.query_params.get('ticket','')
+        ticket_id=self.request.query_params.get('letter','')
         
         if ticket_id:
             data=data.filter(ticket__id=ticket_id)
@@ -125,11 +132,11 @@ class MessageStatusView(generics.UpdateAPIView,):
 
 
     def update(self, request, *args, **kwargs):
-        message_id=request.data.get('comment_id')
+        message_id=request.data.get('comment')
         user_id=self.kwargs.get('pk')
 
         if user_id == request.user.id:
-            message_obj=get_object_or_404(models.LetterMessage,id=message_id)
+            message_obj=get_object_or_404(models.Comment,id=message_id)
             user_obj=get_object_or_404(models.BaseUser,id=user_id)
 
             if message_obj.status=='US':

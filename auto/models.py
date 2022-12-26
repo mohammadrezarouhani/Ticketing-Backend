@@ -1,6 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
-import os,pathlib,uuid,random,string,pdb
+from django.db import models
+from django.core.validators import RegexValidator
+import os,pathlib,uuid,random,string
 
 
 def get_random_id():
@@ -21,10 +22,13 @@ class BaseUser(AbstractUser):
         ('SUP','SUPERWISER'),
         ('STF','STAFF')
     ]
+
     MANAGER=('MAN','MANAGER')
     SUPERWISER=('SUP','SUPERWISER')
     STAFF=('STF','STAFF')
-
+    
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+    phone=models.CharField(max_length=20,validators=[phone_regex],default="+914000000")
     departman=models.ForeignKey('Departman',on_delete=models.SET_NULL,null=True)
     email=models.EmailField(unique=True)
     rank=models.CharField(max_length=115,choices=RANK,default=STAFF)
@@ -33,8 +37,6 @@ class BaseUser(AbstractUser):
     is_superuser=models.BooleanField(default=False)
     image=models.ImageField(default='def.jpg',upload_to=get_image_path)
     
-    USERNAME_FIELD='email'
-    REQUIRED_FIELDS=['username']
 
     def __str__(self) -> str:
         return self.email+"({})".format(self.id)
@@ -55,8 +57,6 @@ class Letter(models.Model):
 
     id=models.CharField(max_length=15,default=get_random_id
                         ,primary_key=True,unique=True,editable=False)
-    title=models.CharField(max_length=255)
-    discription=models.TextField()
     priority=models.CharField(max_length=115,choices=PRIORITY,default=MEDIUM)
     owner=models.ForeignKey(BaseUser,on_delete=models.CASCADE)
     departman=models.ForeignKey(Departman,on_delete=models.SET_NULL,null=True)
@@ -67,14 +67,14 @@ class Letter(models.Model):
         ordering=['-created_at']
 
 
-class LetterMessage(models.Model):
+class Comment(models.Model):
     STATUS=[('SN','SEEN'),('US','UNSEEN')]
     SEEN=('SN','SEEN')
     UNSEEN=('US','UNSEEN')
 
     id=models.CharField(max_length=15,default=get_random_id
                         ,primary_key=True,unique=True,editable=False)
-    letter=models.ForeignKey(Letter,on_delete=models.CASCADE,related_name='letter_message')
+    letter=models.ForeignKey(Letter,on_delete=models.CASCADE,related_name='comment')
     sender=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='sender')
     receiver=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='reciever')
     title=models.CharField(max_length=255)
@@ -84,10 +84,16 @@ class LetterMessage(models.Model):
     updated_at=models.DateTimeField(null=True,blank=True)
 
 
+class CommentFile(models.Model):
+    comment=models.ForeignKey(Comment,on_delete=models.CASCADE,related_name='comment_file',blank=True)
+    file=models.FileField(upload_to=get_image_path)
+    created_at=models.DateTimeField(auto_now=True)
+
+
 class History(models.Model):
-    id=models.CharField(max_length=15,default=get_random_id
-                        ,primary_key=True,unique=True,editable=False)
-    Letter=models.ForeignKey(Letter,on_delete=models.CASCADE)
+    id=models.CharField(max_length=15,default=get_random_id,primary_key=True,unique=True,editable=False)
+    title=models.CharField(max_length=115)
+    description=models.TextField()
     owner=models.ForeignKey(BaseUser,on_delete=models.CASCADE)
     departman=models.ForeignKey(Departman,on_delete=models.CASCADE)
     created_at=models.DateTimeField(auto_now=True)
@@ -96,8 +102,9 @@ class History(models.Model):
         ordering=['-created_at']
 
 
-class CommentFile(models.Model):
-    ticket_message=models.ForeignKey(LetterMessage,on_delete=models.CASCADE,related_name='comment_file',blank=True)
-    image=models.FileField(upload_to=get_image_path)
+class FileHistory(models.Model):
+    id=models.CharField(max_length=15,default=get_random_id
+                        ,primary_key=True,unique=True,editable=False)
+    history=models.ForeignKey(History,on_delete=models.CASCADE,related_name='history_file',blank=True)
+    file=models.FileField(upload_to=get_image_path)
     created_at=models.DateTimeField(auto_now=True)
-

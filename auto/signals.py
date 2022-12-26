@@ -5,7 +5,7 @@ from .models import BaseUser
 from . import models
 import os,pdb
 
-@receiver(post_save,sender=models.LetterMessage )
+@receiver(post_save,sender=models.Comment )
 def on_save_ticketmessage(sender,instance,created,*args,**kwargs):
     if created and instance.status == "US":
         user=get_user_model().objects.get(id=instance.receiver.id)
@@ -14,7 +14,7 @@ def on_save_ticketmessage(sender,instance,created,*args,**kwargs):
         instance.save()
 
 
-@receiver(pre_delete,sender=models.LetterMessage)
+@receiver(pre_delete,sender=models.Comment)
 def on_delete_message(sender,instance,using,*args,**kwargs):
         user=get_user_model().objects.get(id=instance.receiver.id)
         user.has_message-=1
