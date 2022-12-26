@@ -25,48 +25,48 @@ class DepartmanSerializer(serializers.ModelSerializer):
 class TicketHistorySerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
-        model = models.TicketHistory
+        model = models.History
 
 
 class FileUploadserializer(serializers.ModelSerializer):
     class Meta:
         fields = ['id', 'ticket_message', 'image', 'created_at']
-        model = models.FileUpload
+        model = models.CommentFile
 
 
-class TicketMessageSerializer(serializers.ModelSerializer):
-    file_upload = FileUploadserializer(many=True,allow_null=True)
+class LetterCommentSerializer(serializers.ModelSerializer):
+    comment_file = FileUploadserializer(many=True,allow_null=True)
 
     class Meta:
-        fields = ['id', 'ticket', 'sender', 'receiver', 'title',
-                  'description', 'status','created_at','updated_at', 'file_upload']
-        model = models.TicketMessage
+        fields = ['id', 'letter', 'sender', 'receiver', 'title',
+                  'description', 'status','created_at','updated_at', 'comment_file']
+        model = models.LetterMessage
 
     def create(self, validated_data):
         file_upload = validated_data.pop('file_upload')
-        ticket_message = super().create(validated_data)
+        letter_message = super().create(validated_data)
 
         for data in file_upload:
-            models.FileUpload.objects.create(
-                **data, ticket_message=ticket_message)
-        return ticket_message
+            models.CommentFile.objects.create(
+                **data, letter_message=letter_message)
+        return letter_message
 
     def update(self, instance, validated_data):
         file_upload = validated_data.pop('file_upload')
-        ticket_message = super().update(instance, validated_data)
-        models.FileUpload.objects.filter(
-            ticket_message=ticket_message).delete()
+        letter_message = super().update(instance, validated_data)
+        models.CommentFile.objects.filter(
+            letter_message=letter_message).delete()
 
         for data in file_upload:
-            models.FileUpload.objects.create(
-                **data, ticket_message=ticket_message)
-        return ticket_message
+            models.CommentFile.objects.create(
+                **data, letter_message=letter_message)
+        return letter_message
 
 
-class TicketSerializer(serializers.ModelSerializer):
+class LetterSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = models.Ticket
+        model = models.Letter
         fields = '__all__'
 
 
@@ -75,6 +75,6 @@ class ChangePasswordSerializer(serializers.Serializer):
     new_password=serializers.CharField(max_length=115)
 
 
-class MessageStatusSerializer(serializers.Serializer):
-    message_id=serializers.CharField()
+class CommentStatusSerializer(serializers.Serializer):
+    comment_id=serializers.CharField()
     date=serializers.DateTimeField()

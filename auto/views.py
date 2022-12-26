@@ -1,8 +1,8 @@
 from django.contrib.auth.password_validation import validate_password
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from rest_framework import generics,status,mixins
-from rest_framework.viewsets import ModelViewSet,GenericViewSet
+from rest_framework import generics,status
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from . import permissions,serializer,models
@@ -31,8 +31,8 @@ class UserViewSet(ModelViewSet):
 
 class TicketViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated,permissions.TicketPermission]
-    serializer_class=serializer.TicketSerializer
-    queryset=models.Ticket.objects.all()
+    serializer_class=serializer.LetterSerializer
+    queryset=models.Letter.objects.all()
 
     def list(self, request, *args, **kwargs):
         data =self.get_queryset()
@@ -50,8 +50,8 @@ class TicketViewSet(ModelViewSet):
 
 class TicketMessageViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated,permissions.TicketMessagePermission]
-    serializer_class=serializer.TicketMessageSerializer
-    queryset=models.TicketMessage.objects.all()
+    serializer_class=serializer.LetterCommentSerializer
+    queryset=models.LetterMessage.objects.all()
 
     def list(self, request, *args, **kwargs):
         data =self.get_queryset()
@@ -68,7 +68,7 @@ class TicketMessageViewSet(ModelViewSet):
 class TicketHistoryViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated,permissions.TicketHistoryPermission]
     serializer_class=serializer.TicketHistorySerializer
-    queryset=models.TicketHistory.objects.all()
+    queryset=models.History.objects.all()
 
     def list(self, request, *args, **kwargs):
         data =self.get_queryset()
@@ -120,16 +120,16 @@ class ChangePasswordView(generics.UpdateAPIView):
 
 class MessageStatusView(generics.UpdateAPIView,):
     permission_classes=[IsAuthenticated]
-    serializer_class=serializer.MessageStatusSerializer
+    serializer_class=serializer.CommentStatusSerializer
     model=models.BaseUser
 
 
     def update(self, request, *args, **kwargs):
-        message_id=request.data.get('message_id')
+        message_id=request.data.get('comment_id')
         user_id=self.kwargs.get('pk')
 
         if user_id == request.user.id:
-            message_obj=get_object_or_404(models.TicketMessage,id=message_id)
+            message_obj=get_object_or_404(models.LetterMessage,id=message_id)
             user_obj=get_object_or_404(models.BaseUser,id=user_id)
 
             if message_obj.status=='US':
@@ -138,6 +138,6 @@ class MessageStatusView(generics.UpdateAPIView,):
                 user_obj.save()
                 message_obj.save()
                 return Response(status=status.HTTP_200_OK)
-            return Response(data={"status":"message already been seen"},status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"status":"comment already been seen"},status=status.HTTP_400_BAD_REQUEST)
         
-        return Response(data={"status":"wrong user id or message id"},status=status.HTTP_404_NOT_FOUND)
+        return Response(data={"status":"wrong user id or comment id"},status=status.HTTP_404_NOT_FOUND)

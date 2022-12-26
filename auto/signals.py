@@ -5,7 +5,7 @@ from .models import BaseUser
 from . import models
 import os,pdb
 
-@receiver(post_save,sender=models.TicketMessage )
+@receiver(post_save,sender=models.LetterMessage )
 def on_save_ticketmessage(sender,instance,created,*args,**kwargs):
     if created and instance.status == "US":
         user=get_user_model().objects.get(id=instance.receiver.id)
@@ -14,14 +14,14 @@ def on_save_ticketmessage(sender,instance,created,*args,**kwargs):
         instance.save()
 
 
-@receiver(pre_delete,sender=models.TicketMessage)
+@receiver(pre_delete,sender=models.LetterMessage)
 def on_delete_message(sender,instance,using,*args,**kwargs):
         user=get_user_model().objects.get(id=instance.receiver.id)
         user.has_message-=1
         user.save()
 
 
-@receiver(pre_delete,sender=models.FileUpload)
+@receiver(pre_delete,sender=models.CommentFile)
 def on_delete_message_file(sender,instance,using,*args,**kwargs):
     if os.path.exists(instance.image.path):
         os.remove(instance.image.path)

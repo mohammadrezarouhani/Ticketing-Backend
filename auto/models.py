@@ -27,7 +27,7 @@ class BaseUser(AbstractUser):
 
     departman=models.ForeignKey('Departman',on_delete=models.SET_NULL,null=True)
     email=models.EmailField(unique=True)
-    rank=models.CharField(max_length=115,choices=RANK)
+    rank=models.CharField(max_length=115,choices=RANK,default=STAFF)
     has_message=models.PositiveIntegerField(default=0)
     is_staff=models.BooleanField(default=False)
     is_superuser=models.BooleanField(default=False)
@@ -47,7 +47,7 @@ class Departman(models.Model):
     discription=models.TextField(null=True,blank=True)
 
 
-class Ticket(models.Model):
+class Letter(models.Model):
     PRIORITY=[('H','HIGH'),('M','MIDIUM'),('L','LOW')]
     HIGH=('H','HIGH')
     MEDIUM=('M','MIDIUM')
@@ -67,14 +67,14 @@ class Ticket(models.Model):
         ordering=['-created_at']
 
 
-class TicketMessage(models.Model):
+class LetterMessage(models.Model):
     STATUS=[('SN','SEEN'),('US','UNSEEN')]
     SEEN=('SN','SEEN')
     UNSEEN=('US','UNSEEN')
 
     id=models.CharField(max_length=15,default=get_random_id
                         ,primary_key=True,unique=True,editable=False)
-    ticket=models.ForeignKey(Ticket,on_delete=models.CASCADE,related_name='ticket_message')
+    letter=models.ForeignKey(Letter,on_delete=models.CASCADE,related_name='letter_message')
     sender=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='sender')
     receiver=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='reciever')
     title=models.CharField(max_length=255)
@@ -84,10 +84,10 @@ class TicketMessage(models.Model):
     updated_at=models.DateTimeField(null=True,blank=True)
 
 
-class TicketHistory(models.Model):
+class History(models.Model):
     id=models.CharField(max_length=15,default=get_random_id
                         ,primary_key=True,unique=True,editable=False)
-    ticket=models.ForeignKey(Ticket,on_delete=models.CASCADE)
+    Letter=models.ForeignKey(Letter,on_delete=models.CASCADE)
     owner=models.ForeignKey(BaseUser,on_delete=models.CASCADE)
     departman=models.ForeignKey(Departman,on_delete=models.CASCADE)
     created_at=models.DateTimeField(auto_now=True)
@@ -96,8 +96,8 @@ class TicketHistory(models.Model):
         ordering=['-created_at']
 
 
-class FileUpload(models.Model):
-    ticket_message=models.ForeignKey(TicketMessage,on_delete=models.CASCADE,related_name='file_upload',blank=True)
+class CommentFile(models.Model):
+    ticket_message=models.ForeignKey(LetterMessage,on_delete=models.CASCADE,related_name='comment_file',blank=True)
     image=models.FileField(upload_to=get_image_path)
     created_at=models.DateTimeField(auto_now=True)
 
