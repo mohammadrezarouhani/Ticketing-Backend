@@ -45,7 +45,7 @@ class Departman(models.Model):
     id=models.CharField(max_length=15,default=get_random_id
                         ,primary_key=True,unique=True,editable=False)
     title=models.CharField(max_length=255)
-    discription=models.TextField(null=True,blank=True)
+    description=models.TextField(null=True,blank=True)
 
     def __str__(self) -> str:
         return self.title+"({})".format(id)

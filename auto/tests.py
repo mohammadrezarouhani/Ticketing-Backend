@@ -5,14 +5,27 @@ from . import models
 
 class AutoTestCases(APITestCase):
     def create_initial_data(self):
+        # cridential data
+        self.cridential_data={
+            'username':'admin',
+            'password':'admin'
+        }
+
+        self.departman_json_obj={
+            'title':'test',
+            'description':'test'
+        }
+        self.departman_obj=models.Departman.objects.create(**self.departman_json_obj)
+
         # User Data
         self.user_json={
-            "username": "test",
-            "email": "test@test.com",
+            "username": "admin",
+            "email": "admin@admin.com",
             "first_name": "test",
             "last_name": "test",
+            "departman":self.departman_obj,
             "phone":"+9151452125",
-            "password": "test",
+            "password": "admin",
             "rank": "STF"
         }
 
@@ -37,19 +50,22 @@ class AutoTestCases(APITestCase):
         self.letter_json={
             "id": "V3omNvMn",
             "priority": "H",
-            "created_at": "2022-12-26T14:35:25.613268Z",
-            "updated_at": "null",
             "owner": "HEz8lFVC",
             "departman": "0bE1T8Gd"
         }
 
-        self.letter_obj=models.Letter.objects.create(**self.letter_json)
+        self.letter_json_obj={
+            "id": "V3omNvMn",
+            "priority": "H",
+            "owner": self.user_obj,
+            "departman": self.departman_obj
+        }
+
+        self.letter_obj=models.Letter.objects.create(**self.letter_json_obj)
 
         self.editedletter_json={
             "id": self.letter_obj.id,
             "priority": "H",
-            "created_at": "2022-12-26T14:35:25.613268Z",
-            "updated_at": "null",
             "owner": "HEz8lFVC",
             "departman": "0bE1T8Gd"
         }
@@ -77,33 +93,30 @@ class AutoTestCases(APITestCase):
 
         # Comment
         self.comment_json={
-            "id": "kCIIXSZX",
-            "comment_file": [
-                #"file": "http://127.0.0.1:8000/media/content_file/643e4fe1-09f8-4648-b3e1-e41afd883871.png",
-                ],
             "title": "test",
             "description": "test",
             "status": "US",
-            "created_at": "2022-12-26T15:00:35.598855Z",
-            "updated_at": "null",
             "letter": self.letter_obj.id,
             "sender": self.user_obj.id,
             "receiver": self.user_obj.id
         }
 
-        self.comment_obj=models.Comment.objects.create(**self.comment_json,letter=self.letter_obj,
-                                                sender=self.user_obj,receiver=self.user_obj)
-        
+        self.comment_json_obj={
+            "title": "test",
+            "description": "test",
+            "status": "US",
+            "letter": self.letter_obj,
+            "sender": self.user_obj,
+            "receiver": self.user_obj
+        }
+
+        self.comment_obj=models.Comment.objects.create(**self.comment_json_obj)
+
         self.edited_comment_json={
             "id": self.comment_obj.id,
-            "comment_file": [
-                #"file": "http://127.0.0.1:8000/media/content_file/643e4fe1-09f8-4648-b3e1-e41afd883871.png",
-                ],
             "title": "test_edited",
             "description": "test_edited",
             "status": "US",
-            "created_at": "2022-12-26T15:00:35.598855Z",
-            "updated_at": "null",
             "letter": self.letter_obj.id,
             "sender": self.user_obj.id,
             "receiver": self.user_obj.id
@@ -125,19 +138,31 @@ class AutoTestCases(APITestCase):
             "departman": "0bE1T8Gd"
         }
 
+    def set_routing_url(self):
+        self.token_obtain=reverse('token-obtain')
+        self.token_obtain=reverse('token-refresh')
+        self.user_list=reverse('user-list')
+        self.user_detail=reverse('user-detail',kwargs={'pk':self.user_obj.id})
+        self.change_password=reverse('change-password',kwargs={'pk':self.user_obj.id})
+        self.departman_list=reverse('departman-list')
+        self.letter_list=reverse('letter-list')
+        self.letter_detail=reverse('letter-detail',kwargs={'pk':self.letter_obj.id})
+        self.initial_letter=reverse('initial-letter-list')
+        self.comment_list=reverse('comment-list')
+        self.comment_detail=reverse('comment-detail',kwargs={'pk':self.comment_obj.id})
+        self.comment_status=reverse('comment-status',kwargs={'pk':self.user_obj.id})
 
-    def get_cridential_token(self):
-        pass #TODO set authorization for testing 
-
-        
-    def test_user_detail(self):
-        pass
+    def authorise(self):
+        response=self.client.post(self.token_obtain,data=self.cridential_data) 
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(response.data.get('access')))
 
     def setUp(self) -> None:
+        self.create_initial_data()
+        self.set_routing_url()
         return super().setUp()
 
     def test_create_user(self):
-        url=reverse('user-detail',kwargs={'pk':'asdwadW'})
+        pass
 
     def test_change_password(self):
         pass
@@ -184,7 +209,7 @@ class AutoTestCases(APITestCase):
     def test_create_history(self):
         pass
 
-    def test_retreive_hsitory(self):
+    def test_retreive_history(self):
         pass
 
     def test_delete_history(self):
