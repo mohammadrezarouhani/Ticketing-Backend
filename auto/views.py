@@ -29,7 +29,7 @@ class UserViewSet(ModelViewSet):
 
 
 class LetterViewSet(ModelViewSet):
-    http_method_names=['get','update','delete']
+    http_method_names=['get','put','delete']
     permission_classes=[IsAuthenticated,permissions.LetterPermission]
     serializer_class=serializer.LetterSerializer
     queryset=models.Letter.objects.all()
