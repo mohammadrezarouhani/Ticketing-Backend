@@ -1,12 +1,12 @@
 from rest_framework import serializers
 from .import models
-
+import pdb
 
 class BaseUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.BaseUser
-        fields = ['id','has_message','first_name','last_name','username','email','password','departman','rank']
+        fields = ['id','has_message','first_name','last_name','phone','username','email','password','departman','rank']
 
     def create(self, validated_data):
         user=models.BaseUser.objects.create(**validated_data)
@@ -28,26 +28,44 @@ class FileHistorySerializer(serializers.ModelSerializer):
         fields='__all__'
 
 
-# oeverridong create and update method 
 class History(serializers.ModelSerializer):
     history_file=FileHistorySerializer(many=True,allow_null=True)
+
     class Meta:
         fields = '__all__'
         model = models.History
 
+    def create(self, validated_data):
+        history_file=validated_data.pop('history_file')
+        history=super().create(validated_data)
+
+        for data in history_file:
+            models.FileHistory.objects.create(**data,history=history)
+        
+        return history
+
+    def update(self, instance, validated_data):
+        history_file=validated_data.pop('history_file')
+        history=super().update(instance, validated_data)
+        models.FileHistory.objects.filter(history=history).delete()
+
+        for data in history_file:
+            models.FileHistory.objects.create(**data,history=history)
+
+        return history
+
 
 class CommentFileserializer(serializers.ModelSerializer):
     class Meta:
-        fields = ['id', 'comment', 'image', 'created_at']
+        fields = '__all__'
         model = models.CommentFile
 
 
-class LetterCommentSerializer(serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
     comment_file = CommentFileserializer(many=True,allow_null=True)
 
     class Meta:
-        fields = ['id', 'letter', 'sender', 'receiver', 'title',
-                  'description', 'status','created_at','updated_at', 'comment_file']
+        fields = '__all__'
         model = models.Comment
 
     def create(self, validated_data):
@@ -72,18 +90,30 @@ class LetterCommentSerializer(serializers.ModelSerializer):
 
 
 class LetterSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.Letter
         fields = '__all__'
 
 
 class InitialLetterSerializer(serializers.ModelSerializer):
-    comment=CommentFileserializer(many=True)
+    comment=CommentSerializer(many=True)
     
     class Meta:
-        fields=['id','priority','owner','departman','comment']
+        fields='__all__'
         model=models.Letter
+
+    def create(self, validated_data):
+        comment=validated_data.pop('comment')
+        letter=models.Letter.objects.create(**validated_data)
+        
+        comment_file=comment[0].pop('comment_file')
+        comment=models.Comment.objects.create(**comment[0],letter=letter)
+
+        for data in comment_file:
+            models.CommentFile.objects.create(**data,comment=comment)
+
+        return letter
+
 
 class ChangePasswordSerializer(serializers.Serializer):
     old_password=serializers.CharField(max_length=115)

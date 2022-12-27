@@ -8,19 +8,19 @@ user_router=DefaultRouter()
 user_router.register('',views.UserViewSet)
 
 letter_router=DefaultRouter()
-letter_router.register('',views.TicketViewSet)
+letter_router.register('',views.LetterViewSet)
 
 initial_letter_router=DefaultRouter()
-initial_letter_router.register('',views.InitialTicketViewSet)
+initial_letter_router.register('',views.InitialLetterViewSet)
 
 departman_router=DefaultRouter()
 departman_router.register('',views.DepartmanViewSet)
 
 letter_message_router=DefaultRouter()
-letter_message_router.register('',views.TicketMessageViewSet)
+letter_message_router.register('',views.CommentViewSet)
 
 letter_history=DefaultRouter()
-letter_history.register('',views.TicketHistoryViewSet)
+letter_history.register('',views.HistoryViewSet)
 
 
 urlpatterns=[
@@ -39,7 +39,7 @@ urlpatterns=[
 
     path('comment/',include(letter_message_router.urls)),
     path('comment/<str:pk>/',include(letter_message_router.urls)),
-    path('comment-status/<str:pk>/',views.MessageStatusView.as_view()),
+    path('comment-status/<str:pk>/',views.CommentStatusView.as_view()),
     
     path('history/',include(letter_history.urls)),
     path('history/<int:pk>/',include(letter_history.urls)),
