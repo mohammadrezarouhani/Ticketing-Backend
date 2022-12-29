@@ -96,7 +96,7 @@ class LetterSerializer(serializers.ModelSerializer):
 
 
 class InitialLetterSerializer(serializers.ModelSerializer):
-    comment=CommentSerializer(many=True)
+    comment=CommentSerializer(many=True,allow_null=True)
     
     class Meta:
         fields='__all__'
