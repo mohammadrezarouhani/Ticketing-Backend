@@ -6,6 +6,7 @@ from . import models
 import pdb
 
 class AutoTestCases(APITestCase):
+    # create some initial data for testing 
     def create_initial_data(self):
         # cridential data
         self.cridential_data={
@@ -106,7 +107,10 @@ class AutoTestCases(APITestCase):
             "status": "US",
             "letter": self.letter_obj.id,
             "sender": self.user_obj.id,
-            "receiver": self.user_obj.id
+            "receiver": self.user_obj.id,
+            "comment_file":[
+                # "file": "url to file"
+            ]
         }
 
         self.comment_json_obj={
@@ -142,10 +146,31 @@ class AutoTestCases(APITestCase):
             ],
             "title": "test",
             "description": "test",
-            "owner": "HEz8lFVC",
-            "departman": "0bE1T8Gd"
+            "owner": self.user_obj.id,
+            "departman": self.departman_obj.id
+        }
+        
+        self.history_json_obj={
+            "title": "test",
+            "description": "test",
+            "owner": self.user_obj,
+            "departman": self.departman_obj
+        }
+        
+        self.history_obj=models.History.objects.create(**self.history_json_obj)
+        
+        self.history_json_edited={
+            "id":self.history_obj.id,
+            "history_file": [
+                #"file": "http://127.0.0.1:8000/media/content_file/643e4fe1-09f8-4648-b3e1-e41afd883871.png",
+            ],
+            "title": "edited test",
+            "description": "edited test",
+            "owner": self.user_obj.id,
+            "departman": self.departman_obj.id
         }
 
+    # define routing for api testing 
     def set_routing_url(self):
         self.token_obtain_url=reverse('token-obtain')
         self.token_refresh_url=reverse('token-refresh')
@@ -156,13 +181,18 @@ class AutoTestCases(APITestCase):
         self.letter_list_url=reverse('letter-list')+"?owner={}".format(self.user_obj.id)
         self.letter_detail_url=reverse('letter-detail',kwargs={'pk':self.letter_obj.id})
         self.initial_letter_url=reverse('initial-letter-list')
-        self.comment_list_url=reverse('comment-list')
+        self.comment_list_url=reverse('comment-list')+"?letter={}".format(self.letter_obj.id)
         self.comment_detail_url=reverse('comment-detail',kwargs={'pk':self.comment_obj.id})
         self.comment_status_url=reverse('comment-status',kwargs={'pk':self.user_obj.id})
+        self.history_list_url=reverse('history-list')
+        self.history_detail_url=reverse('history-detail',kwargs={'pk':self.history_obj.id})
 
+    # use jwt to authenticate test user in test database
     def authorise(self):
         response=self.client.post(self.token_obtain_url,data=self.cridential_data) 
         self.client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(response.data.get('access')))
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertTrue(response.data)
 
     def setUp(self) -> None:
         self.create_initial_data()
@@ -171,12 +201,12 @@ class AutoTestCases(APITestCase):
         return super().setUp()
 
     def test_create_user(self):
-        response=self.client.post(self.user_list_url,data=self.user_json)
+        response=self.client.post(self.user_list_url,data=self.user_json,format='json')
         self.assertEqual(response.status_code,status.HTTP_201_CREATED)
         self.assertTrue(models.BaseUser.objects.filter(id=response.data.get('id')).exists())
 
     def test_change_password(self):
-        response=self.client.put(self.change_password_url,self.change_pass_json)
+        response=self.client.put(self.change_password_url,self.change_pass_json,format='json')
         self.assertEqual(response.status_code,status.HTTP_200_OK)
         self.assertTrue(models.BaseUser.objects.get(id=self.user_obj.id).check_password(self.change_pass_json['new_password']))
 
@@ -189,7 +219,6 @@ class AutoTestCases(APITestCase):
         response=self.client.get(self.letter_list_url)
         self.assertEqual(response.status_code,status.HTTP_200_OK)
         self.assertTrue(response.data)
-
 
     def test_create_letter(self):
         response=self.client.post(self.letter_list_url,self.letter_json)
@@ -209,42 +238,43 @@ class AutoTestCases(APITestCase):
         response=self.client.delete(self.letter_detail_url)
         self.assertEqual(response.status_code,status.HTTP_204_NO_CONTENT)
 
-    def test_create_initial_letter(self): # TODO write next test in time
-        # response=self.client.post(self.initial_letter_url,self.initial_letter_json)
-        # self.assertEqual(response.status_code,status.HTTP_201_CREATED)
-        # self.assertTrue(response.data)
+    def test_create_initial_letter(self):
+        response=self.client.post(self.initial_letter_url,self.initial_letter_json,format='json')
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+        self.assertTrue(response.data)
 
-    def test_list_user_comment(self):
-        pass
-
-    def test_create_user_comment(self):
-        pass
-
-    def test_get_letter_comment(self):
-        pass
+    def test_list_letter_comment(self):
+        response=self.client.get(self.comment_list_url)
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertTrue(response.data)
 
     def test_create_letter_comment(self):
-        pass
+        response=self.client.post(self.comment_list_url,self.comment_json,format='json')
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+        self.assertTrue(response.data)
 
     def test_retreive_comment(self):
-        pass
+        response=self.client.get(self.comment_detail_url)
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertTrue(response.data)
 
     def test_get_history(self):
-        pass
+        response=self.client.get(self.history_list_url)
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertTrue(response.data)
 
     def test_create_history(self):
-        pass
+        response=self.client.post(self.history_list_url,self.history_json,format='json')
+        self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+        self.assertTrue(response.data)
 
     def test_retreive_history(self):
-        pass
-
-    def test_delete_history(self):
-        pass
+        response=self.client.get(self.history_detail_url)
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertTrue(response.data)
 
     def test_update_history(self):
-        pass
-
-    def test_delete_history(self):
-        pass
-
+        response=self.client.put(self.history_detail_url,self.history_json_edited,format='json')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertTrue(response.data)
     
