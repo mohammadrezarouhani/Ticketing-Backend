@@ -6,7 +6,7 @@ import pdb
 class DepartmanSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ['title','description']
+        fields = '__all__'
         model = models.Departman
 
 # this serializer is for revese nested serializer in case of more detail than just an id

@@ -39,9 +39,12 @@ class LetterViewSet(ModelViewSet):
 
         owner_id=self.request.query_params.get('owner','')
         departman_id=self.request.query_params.get('departman','')
+        title=self.request.query_params.get('title','')
 
         if (owner_id or departman_id) :
             data=data.filter(Q(owner__id=owner_id)|Q(departman__id=departman_id))
+            if title:
+                data=data.filter(title__contains=title)
             sre=self.get_serializer(data,many=True)
             return Response(data=sre.data,status=status.HTTP_200_OK)
 
