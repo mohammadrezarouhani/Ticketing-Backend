@@ -6,16 +6,27 @@ import pdb
 class DepartmanSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = '__all__'
+        fields = ['title','description']
         model = models.Departman
+
+# this serializer is for revese nested serializer in case of more detail than just an id
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=models.BaseUser
+        fields=['username','email','phone']
+
+class LetterDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=models.Letter
+        fields=['title']
 
 
 class BaseUserSerializer(serializers.ModelSerializer):
-    departman=DepartmanSerializer()
+    departman_detail=DepartmanSerializer(source='departman',read_only=True)
     
     class Meta:
         model = models.BaseUser
-        fields = ['id','has_message','first_name','last_name','phone','username','email','password','departman','rank']
+        fields = ['id','has_message','first_name','last_name','phone','username','email','password','departman','departman_detail','rank']
 
     def create(self, validated_data):
         user=models.BaseUser.objects.create(**validated_data)
@@ -32,6 +43,8 @@ class FileHistorySerializer(serializers.ModelSerializer):
 
 class History(serializers.ModelSerializer):
     history_file=FileHistorySerializer(many=True,allow_null=True)
+    owner_detail=UserDetailSerializer(source='owner',read_only=True)
+    departman_detail=DepartmanSerializer(source='departman',read_only=True)
 
     class Meta:
         fields = '__all__'
@@ -63,8 +76,21 @@ class CommentFileserializer(serializers.ModelSerializer):
         model = models.CommentFile
 
 
+class LetterSerializer(serializers.ModelSerializer):
+    departman_detail=DepartmanSerializer(source='departman',read_only=True)
+    owner_detail=UserDetailSerializer(source='owner',read_only=True)
+
+    class Meta:
+        model = models.Letter
+        fields = '__all__'
+
+
 class CommentSerializer(serializers.ModelSerializer):
-    comment_file = CommentFileserializer(many=True,allow_null=True)
+    comment_file=CommentFileserializer(many=True)
+    departman_detail=DepartmanSerializer(source='departman',read_only=True)
+    letter_detail=LetterDetailSerializer(source='letter',read_only=True)
+    sender_detail=UserDetailSerializer(source='sender',read_only=True)
+    receiver_detail=UserDetailSerializer(source='receiver',read_only=True)
 
     class Meta:
         fields = '__all__'
@@ -91,12 +117,6 @@ class CommentSerializer(serializers.ModelSerializer):
         return letter_message
 
 
-class LetterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Letter
-        fields = '__all__'
-
-
 class InitialLetterSerializer(serializers.ModelSerializer):
     comment=CommentSerializer(many=True,allow_null=True)
     
@@ -107,12 +127,12 @@ class InitialLetterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         comment=validated_data.pop('comment')
         letter=models.Letter.objects.create(**validated_data)
-        
-        comment_file=comment[0].pop('comment_file')
-        comment=models.Comment.objects.create(**comment[0],letter=letter)
+        if comment:
+            comment_file=comment[0].pop('comment_file')
+            comment=models.Comment.objects.create(**comment[0],letter=letter)
 
-        for data in comment_file:
-            models.CommentFile.objects.create(**data,comment=comment)
+            for data in comment_file:
+                models.CommentFile.objects.create(**data,comment=comment)
 
         return letter
 

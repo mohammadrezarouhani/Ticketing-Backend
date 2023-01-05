@@ -63,12 +63,14 @@ class AutoTestCases(APITestCase):
         # Letter Data
         self.letter_json={
             "priority": "H",
+            'title':"test",
             "owner": "HEz8lFVC",
             "departman": "0bE1T8Gd"
         }
 
         self.letter_json_obj={
             "id": "V3omNvMn",
+            'title':"test",
             "priority": "H",
             "owner": self.user_obj,
             "departman": self.departman_obj
@@ -78,6 +80,7 @@ class AutoTestCases(APITestCase):
 
         self.edited_letter_json={
             "id": self.letter_obj.id,
+            'title':"test edited",
             "priority": "H",
             "owner": self.user_obj.id,
             "departman": self.departman_obj.id
@@ -95,6 +98,7 @@ class AutoTestCases(APITestCase):
                 "receiver": self.user_obj.id
                 }
             ],
+            "title":"test",
             "priority": "M",
             "owner": self.user_obj.id,
             "departman": self.departman_obj.id
