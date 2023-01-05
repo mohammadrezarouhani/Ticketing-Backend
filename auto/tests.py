@@ -190,6 +190,7 @@ class AutoTestCases(APITestCase):
         self.comment_status_url=reverse('comment-status',kwargs={'pk':self.user_obj.id})
         self.history_list_url=reverse('history-list')
         self.history_detail_url=reverse('history-detail',kwargs={'pk':self.history_obj.id})
+        self.token_detail_url=reverse('token-detail')
 
     # use jwt to authenticate test user in test database
     def authorise(self):
@@ -282,3 +283,7 @@ class AutoTestCases(APITestCase):
         self.assertEqual(response.status_code,status.HTTP_200_OK)
         self.assertTrue(response.data)
     
+    def test_token_detail_list(self):
+        response=self.client.get(self.token_detail_url)
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertTrue(response.data)

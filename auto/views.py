@@ -2,9 +2,11 @@ from django.contrib.auth.password_validation import validate_password
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from rest_framework import generics,status
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import AccessToken
 from . import permissions,serializer,models
 import pdb
 
@@ -102,7 +104,7 @@ class ChangePasswordView(generics.UpdateAPIView):
         user=self.get_object()
 
         if serializer.is_valid():
-            
+             
             if not user.check_password(serializer.data.get('old_password')):
                 return Response(data={'password':'old password is wrong!'},status=status.HTTP_204_NO_CONTENT)
             try:
@@ -141,3 +143,14 @@ class CommentStatusView(generics.UpdateAPIView,):
             return Response(data={"status":"comment has been seen before"},status=status.HTTP_200_OK)
         
         return Response(data={"status":"wrong user id or comment id"},status=status.HTTP_404_NOT_FOUND)
+
+
+class TokenDetailView(generics.ListAPIView):
+    permission_classes=[IsAuthenticated]
+    queryset=models.BaseUser.objects.all
+    serializer_class=serializer.BaseUserSerializer
+
+    def list(self, request, *args, **kwargs):
+        user=request.user
+        sre=self.get_serializer(user)
+        return Response(data=sre.data)

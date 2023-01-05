@@ -145,3 +145,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 class CommentStatusSerializer(serializers.Serializer):
     comment_id=serializers.CharField()
     date=serializers.DateTimeField()
+
+
+class TokenDetailserializer():
+    pass
