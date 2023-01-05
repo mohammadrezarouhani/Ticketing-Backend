@@ -60,8 +60,8 @@ REST_FRAMEWORK = {
 REST_FRAMEWORK.update({'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema' })
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME':timedelta(hours=24),
-    'REFRESH_TOKEN_LIFETIME':timedelta(days=7)
+    'ACCESS_TOKEN_LIFETIME':timedelta(days=30),
+    'REFRESH_TOKEN_LIFETIME':timedelta(days=60)
 }
 
 

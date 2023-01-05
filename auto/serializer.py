@@ -2,8 +2,17 @@ from rest_framework import serializers
 from .import models
 import pdb
 
-class BaseUserSerializer(serializers.ModelSerializer):
 
+class DepartmanSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = '__all__'
+        model = models.Departman
+
+
+class BaseUserSerializer(serializers.ModelSerializer):
+    departman=DepartmanSerializer()
+    
     class Meta:
         model = models.BaseUser
         fields = ['id','has_message','first_name','last_name','phone','username','email','password','departman','rank']
@@ -13,13 +22,6 @@ class BaseUserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
-
-
-class DepartmanSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        fields = '__all__'
-        model = models.Departman
 
 
 class FileHistorySerializer(serializers.ModelSerializer):
