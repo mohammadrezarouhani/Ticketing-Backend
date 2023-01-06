@@ -33,6 +33,7 @@ CORS_ALLOW_ALL_ORIGINS=True
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     'rest_framework',
     'rest_framework_simplejwt',
     'django.contrib.admin',
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'auto',
+    'task',
     'corsheaders',
 ]
 
@@ -66,8 +68,8 @@ SIMPLE_JWT = {
 
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -96,7 +98,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'automation_core.wsgi.application'
-
+ASGI_APPLICATION = 'automation_core.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

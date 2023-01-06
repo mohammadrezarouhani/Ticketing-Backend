@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import RegexValidator
-import os,pathlib,uuid,random,string,pdb,datetime
+import os,pathlib,random,string,datetime
 
 
 def get_random_id():
@@ -10,7 +10,6 @@ def get_random_id():
     return ''.join(id)
 
 def get_image_path(model,filename):
-
     date_moth=datetime.datetime.now().strftime('%h-%Y')
     date_day=datetime.datetime.now().strftime(r"%d-%H-%M-%S")
 
@@ -53,7 +52,7 @@ class Departman(models.Model):
     description=models.TextField(null=True,blank=True)
 
     def __str__(self) -> str:
-        return self.title+"({})".format(id)
+        return self.title+"({})".format(self.id)
 
 
 class Letter(models.Model):

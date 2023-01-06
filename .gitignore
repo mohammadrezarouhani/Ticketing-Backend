@@ -3,3 +3,5 @@ Pipfile.lock
 content_file
 media
 static_file
+__pycache__
+venv
