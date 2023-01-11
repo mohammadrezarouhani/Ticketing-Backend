@@ -12,20 +12,13 @@ class FileUploadAPiView(views.APIView):
 
     def post(self,request,format=None):
         file=request.FILES['file']
-        type=request.query_params.get('type')
+        folder=request.query_params.get('folder')
 
         year_month=datetime.datetime.now().strftime(r'%h-%Y')
         day=datetime.datetime.now().strftime(r'%d')
         time=datetime.datetime.now().strftime(r'%H-%M-%S-%f')
         file_path=Path(settings.MEDIA_ROOT)
 
-        # choosing what folder file should be saved to 
-        if type=='user':    
-            folder='user'
-        elif type=='history':
-            folder='history_file'
-        else :
-            folder='content_file'
         
         file_name=time+Path(file._name).suffix
         file_path=file_path.joinpath(folder).joinpath(year_month).joinpath(day)
