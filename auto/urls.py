@@ -20,5 +20,5 @@ urlpatterns=[
     path('token-refresh/',TokenRefreshView.as_view(),name='token-refresh'),
     path('change-password/<str:pk>/',views.ChangePasswordView.as_view(),name='change-password'),
     path('',include(router.urls),name='user'),
-    path('comment-status/<str:pk>/',views.CommentStatusView.as_view(),name='comment-status')
+    path('comment-status/<str:pk>/',views.CommentStatusView.as_view(),name='comment-status'),
 ]

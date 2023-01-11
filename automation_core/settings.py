@@ -32,8 +32,13 @@ ALLOWED_HOSTS = []
 CORS_ALLOW_ALL_ORIGINS=True
 # Application definition
 
+INTERNAL_IPS=[
+    '127.0.0.1'
+]
+
 INSTALLED_APPS = [
     "daphne",
+    'debug_toolbar',
     'rest_framework',
     'rest_framework_simplejwt',
     'django.contrib.admin',
@@ -45,6 +50,7 @@ INSTALLED_APPS = [
     'auto',
     'task',
     'corsheaders',
+    'file',
 ]
 
 REST_FRAMEWORK = {
@@ -66,10 +72,10 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME':timedelta(days=60)
 }
 
-
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -149,6 +155,7 @@ STATIC_URL = 'static/'
 
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 

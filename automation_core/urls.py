@@ -23,6 +23,8 @@ from rest_framework.documentation import include_docs_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auto/', include('auto.urls')),
+    path('task/',include('task.urls')),
+    path('file/',include('file.urls')),
 ]
 
 django_doc_urlpatterns=[
@@ -36,6 +38,11 @@ django_doc_urlpatterns=[
     ),    
 ]
 
+debug_toolbar_urlpatterns=[
+    path('__debug__',include('debug_toolbar.urls'))
+]
+
 if settings.DEBUG:
     urlpatterns+=static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
     urlpatterns.extend(django_doc_urlpatterns)
+    urlpatterns.extend(debug_toolbar_urlpatterns)
