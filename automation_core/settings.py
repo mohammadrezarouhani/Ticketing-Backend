@@ -13,24 +13,32 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+from environ import Env
+import pdb
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env=Env()
+env.read_env(os.path.join(BASE_DIR,'environment','dev.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qxdx65(_-45cp27kyo&vkuy&1p&%uy6fnrt4jg(7oe78rn+*7('
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = env('SECRET_KEY')
 
-ALLOWED_HOSTS = []
 
-CORS_ALLOW_ALL_ORIGINS=True
-# Application definition
+DEBUG = bool(env('DEBUG'))
+
+
+ALLOWED_HOSTS = env('ALLOWED_HOST').replace(' ','').split(',')
+
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS=True
+else:
+    CORS_ALLOWED_ORIGINS = env('CORS').replace(' ','').split(',')
+
 
 INTERNAL_IPS=[
     '127.0.0.1'
@@ -59,13 +67,10 @@ REST_FRAMEWORK = {
         
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-
-    'DEFAULT_SCHEMA_CLASS':(
-        'rest_framework.schemas.coreapi.AutoSchema',
-    ),
 }
 
-REST_FRAMEWORK.update({'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema' })
+if DEBUG:
+    REST_FRAMEWORK.update({'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema' })
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME':timedelta(days=30),
@@ -109,13 +114,24 @@ ASGI_APPLICATION = 'automation_core.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if  DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE'  : 'django.db.backends.mysql',
+            'NAME'    : env('DB_NAME'),   
+            'USER'    : env('DB_USER'),
+            'PASSWORD': env('DB_PASS'),
+            'HOST'    : env('DB_HOST'),
+            'PORT'    : env('DB_PORT'),
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -151,10 +167,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
-
-MEDIA_URL='/media/'
-MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+if DEBUG:
+    STATIC_URL = 'static/'
+    MEDIA_URL='/media/'
+    MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+else :
+    STATIC_URL = 'static/'
+    STATIC_ROOT=os.path.join(BASE_DIR,'static')
+    MEDIA_URL='/media/'
+    MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

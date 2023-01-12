@@ -4,7 +4,7 @@ from rest_framework import views,status
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser,FormParser
 from pathlib import Path
-import datetime,pdb
+import datetime
 
 
 class FileUploadAPiView(views.APIView):
@@ -32,7 +32,7 @@ class FileUploadAPiView(views.APIView):
 
             # should handle with celery in next phazes
             if file:
-                with open (file_path,mode='wb+') as temp_file:
+                with file_path.open(mode='wb+') as temp_file:
                     for chunk in file.chunks():
                         temp_file.write(chunk)
 
