@@ -45,7 +45,7 @@ class BaseUser(AbstractUser):
     has_message=models.PositiveIntegerField(default=0)
     is_staff=models.BooleanField(default=False)
     is_superuser=models.BooleanField(default=False)
-    image=models.ImageField(default='def.jpg',upload_to=get_image_path)
+    image=models.CharField(max_length=512)
     
     def __str__(self) -> str:
         return self.username+"({})".format(self.id)
@@ -108,7 +108,7 @@ class Comment(models.Model):
 
 class CommentFile(models.Model):
     comment=models.ForeignKey(Comment,on_delete=models.CASCADE,related_name='comment_file',blank=True)
-    file=models.FileField(default="def.jpg",upload_to=get_image_path)
+    file=models.CharField(max_length=512)
     created_at=models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -137,7 +137,7 @@ class FileHistory(models.Model):
     id=models.CharField(max_length=15,default=get_random_id
                         ,primary_key=True,unique=True,editable=False)
     history=models.ForeignKey(History,on_delete=models.CASCADE,related_name='history_file',blank=True)
-    file=models.FileField(upload_to=get_image_path)
+    file=models.CharField(max_length=512)
     created_at=models.DateTimeField(auto_now=True)
 
     class Meta:

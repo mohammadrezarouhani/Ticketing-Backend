@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+  django_gunicorn:
+    volumes:
+      - static:/static
+      - media:/media
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - django_gunicorn
+  
+  db:
+      image: "mysql:8.0.31-debian"
+      ports:
+        - "3306:3306"
+      environment:
+        - "MYSQL_ROOT_PASSWORD=j60sdfsdfof3n6o"
+      volumes:
+        - ./db:/docker-entrypoint-initdb.d/:ro
+volumes:
+  static:
+  media:
