@@ -98,23 +98,20 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         comment_file = validated_data.pop('comment_file')
-        letter_message = super().create(validated_data)
+        comment = super().create(validated_data)
 
         for data in comment_file:
-            models.CommentFile.objects.create(
-                **data, letter_message=letter_message)
-        return letter_message
+            models.CommentFile.objects.create(**data, comment=comment)
+        return comment
 
     def update(self, instance, validated_data):
         comment_file = validated_data.pop('comment_file')
-        letter_message = super().update(instance, validated_data)
-        models.CommentFile.objects.filter(
-            letter_message=letter_message).delete()
+        comment = super().update(instance, validated_data)
+        models.CommentFile.objects.filter(comment=comment).delete()
 
         for data in comment_file:
-            models.CommentFile.objects.create(
-                **data, letter_message=letter_message)
-        return letter_message
+            models.CommentFile.objects.create(**data, comment=comment)
+        return comment
 
 
 class InitialLetterSerializer(serializers.ModelSerializer):
