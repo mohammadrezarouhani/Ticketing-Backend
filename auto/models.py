@@ -115,7 +115,7 @@ class CommentFile(models.Model):
         ordering=['-created_at']
 
     def __str__(self) -> str:
-        return self.file.url+"({})".format(self.id)    
+        return self.file+"({})".format(self.id)    
 
         
 class History(models.Model):
@@ -144,4 +144,4 @@ class FileHistory(models.Model):
         ordering=['-created_at']
         
     def __str__(self) -> str:
-        return self.file.url+"({})".format(self.id)
+        return self.file+"({})".format(self.id)

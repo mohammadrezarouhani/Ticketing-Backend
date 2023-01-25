@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
-from environ import Env
-import pdb
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,7 +38,6 @@ INTERNAL_IPS=[
 ]
 
 INSTALLED_APPS = [
-    "daphne",
     'debug_toolbar',
     'rest_framework',
     'rest_framework_simplejwt',
@@ -51,7 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'auto',
-    'task',
     'corsheaders',
     'file',
 ]
@@ -59,7 +55,6 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
@@ -104,7 +99,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'automation_core.wsgi.application'
-ASGI_APPLICATION = 'automation_core.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
