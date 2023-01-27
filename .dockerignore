@@ -1,0 +1,8 @@
+venv
+media
+*.json
+*.yaml
+docker
+static
+staticfiles
+
