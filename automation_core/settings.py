@@ -12,26 +12,24 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-import os
-
+import os,environ,pdb
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+env=environ.Env()
+env.read_env(os.path.join(BASE_DIR,'environment','prod.env'))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = bool(int(env('DEBUG')))
 
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+    CORS_ALLOW_ALL_ORIGINS=True
+    CSRF_TRUSTED_ORIGINS = ["http://localhost:8001"]
 
-SECRET_KEY = 'django-secret-test'
-
-
-DEBUG = True
-
-
-ALLOWED_HOSTS = ['*']
-
-CORS_ALLOW_ALL_ORIGINS=True
-
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8001"]
+else:
+    ALLOWED_HOSTS = env('ALLOWED_HOST').replace(' ','').split(',')
+    CORS_ALLOWED_ORIGINS = env('ALLOWED_ORIGIN').replace(' ','').split(',')
+    CSRF_TRUSTED_ORIGINS = env('TRUSTED_ORIGIN').replace(' ','').split(',')
 
 
 INTERNAL_IPS=[
@@ -54,7 +52,6 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
@@ -112,17 +109,16 @@ if DEBUG:
         }
     }
 else :
-    pass
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('MYSQL_DATABASE', 'mysql-db'),
-        'USER': os.environ.get('MYSQL_USER', 'mysql-user'),
-        'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'mysql-password'),
-        'HOST': os.environ.get('MYSQL_DATABASE_HOST', 'db'),
-        'PORT': os.environ.get('MYSQL_DATABASE_PORT', 3306),
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('MYSQL_DATABASE', 'mysql-db'),
+            'USER': os.environ.get('MYSQL_USER', 'mysql-user'),
+            'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'mysql-password'),
+            'HOST': os.environ.get('MYSQL_DATABASE_HOST', 'db'),
+            'PORT': os.environ.get('MYSQL_DATABASE_PORT', 3306),
+        }
     }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -163,10 +159,10 @@ if DEBUG:
     MEDIA_URL='/media/'
     MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 else:
-    STATIC_URL = '/static/'
-    STATIC_ROOT = '/home/app/web/static'
-    MEDIA_URL='/media/'
-    MEDIA_ROOT='/home/app/web/media'
+    STATIC_URL = env('STATIC_URL')
+    STATIC_ROOT = env('STATIC_ROOT')
+    MEDIA_URL=env('MEDIA_URL')
+    MEDIA_ROOT=env('MEDIA_ROOT')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
