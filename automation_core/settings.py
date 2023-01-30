@@ -16,7 +16,7 @@ import os,environ,pdb
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 env=environ.Env()
-env.read_env(os.path.join(BASE_DIR,'environment','prod.env'))
+env.read_env(os.path.join(BASE_DIR,'environment','dev.env'))
 
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = bool(int(env('DEBUG')))
@@ -24,7 +24,7 @@ DEBUG = bool(int(env('DEBUG')))
 if DEBUG:
     ALLOWED_HOSTS = ['*']
     CORS_ALLOW_ALL_ORIGINS=True
-    CSRF_TRUSTED_ORIGINS = ["http://localhost:8001"]
+    CSRF_TRUSTED_ORIGINS = ["http://localhost:8001","http://localhost:8001"]
 
 else:
     ALLOWED_HOSTS = env('ALLOWED_HOST').replace(' ','').split(',')

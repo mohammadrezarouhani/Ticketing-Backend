@@ -9,9 +9,9 @@ router=DefaultRouter()
 router.register(r'user',views.UserViewSet,basename='user')
 router.register(r'letter',views.LetterViewSet,basename='letter')
 router.register(r'initial-letter',views.InitialLetterViewSet,basename='initial-letter')
-router.register(r'departman',views.DepartmanViewSet,'departman')
-router.register(r'comment',views.CommentViewSet,'comment')
-router.register(r'history',views.HistoryViewSet,'history')
+router.register(r'departman',views.DepartmanViewSet,basename='departman')
+router.register(r'comment',views.CommentViewSet,basename='comment')
+router.register(r'history',views.HistoryViewSet,basename='history')
 
 
 urlpatterns=[
