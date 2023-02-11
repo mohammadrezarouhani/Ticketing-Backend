@@ -16,7 +16,7 @@ import os,environ,pdb
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 env=environ.Env()
-env.read_env(os.path.join(BASE_DIR,'environment','dev.env'))
+env.read_env(os.path.join(BASE_DIR,'environment','prod.env'))
 
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = bool(int(env('DEBUG')))
