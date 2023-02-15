@@ -14,22 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 import os,environ,pdb
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-env=environ.Env()
-env.read_env(os.path.join(BASE_DIR,'environment','dev.env'))
-
-SECRET_KEY = env('SECRET_KEY')
-DEBUG = bool(int(env('DEBUG')))
-
-if DEBUG:
-    ALLOWED_HOSTS = ['*']
-    CORS_ALLOW_ALL_ORIGINS=True
-    CSRF_TRUSTED_ORIGINS = ["http://localhost:8001","http://localhost:8001"]
-
-else:
-    ALLOWED_HOSTS = env('ALLOWED_HOST').replace(' ','').split(',')
-    CORS_ALLOWED_ORIGINS = env('ALLOWED_ORIGIN').replace(' ','').split(',')
-    CSRF_TRUSTED_ORIGINS = env('TRUSTED_ORIGIN').replace(' ','').split(',')
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 INTERNAL_IPS=[
@@ -37,15 +22,15 @@ INTERNAL_IPS=[
 ]
 
 INSTALLED_APPS = [
-    'debug_toolbar',
-    'rest_framework',
-    'rest_framework_simplejwt',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
+    'rest_framework',
+    'rest_framework_simplejwt',
     'auto',
     'corsheaders',
     'file',
@@ -56,9 +41,6 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
-
-if DEBUG:
-    REST_FRAMEWORK.update({'DEFAULT_SCHEMA_CLASS':'rest_framework.schemas.coreapi.AutoSchema' })
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME':timedelta(days=30),
@@ -98,28 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'automation_core.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-else :
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.environ.get('MYSQL_DATABASE', 'mysql-db'),
-            'USER': os.environ.get('MYSQL_USER', 'mysql-user'),
-            'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'mysql-password'),
-            'HOST': os.environ.get('MYSQL_DATABASE_HOST', 'db'),
-            'PORT': os.environ.get('MYSQL_DATABASE_PORT', 3306),
-        }
-    }
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -139,9 +99,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -149,23 +106,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
-
-if DEBUG:
-    STATIC_URL = 'static/'
-    MEDIA_URL='/media/'
-    MEDIA_ROOT=os.path.join(BASE_DIR,'media')
-else:
-    STATIC_URL = env('STATIC_URL')
-    STATIC_ROOT = env('STATIC_ROOT')
-    MEDIA_URL=env('MEDIA_URL')
-    MEDIA_ROOT=env('MEDIA_ROOT')
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
