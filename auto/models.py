@@ -67,6 +67,10 @@ class Letter(models.Model):
     MEDIUM=('M','MIDIUM')
     LOW=('L','LOW')
 
+    STATUS=(('c','close'),('o','open'))
+    CLOSE=('c','c')
+    OPEN=('o','o')
+
     id=models.CharField(max_length=15,default=get_random_id
                         ,primary_key=True,unique=True,editable=False)
     title=models.CharField(max_length=255)
@@ -74,6 +78,7 @@ class Letter(models.Model):
     sender=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='letter_sender')
     receiver=models.ForeignKey(BaseUser,on_delete=models.CASCADE,related_name='letter_receiver')
     departman=models.ForeignKey(Departman,on_delete=models.SET_NULL,null=True)
+    status=models.CharField(choices=STATUS,default=OPEN,max_length=25)
     created_at=models.DateTimeField(auto_now=True)
     updated_at=models.DateTimeField(null=True,blank=True)
 

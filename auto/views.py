@@ -6,12 +6,12 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from . import permissions,serializer,models
 import pdb
 
 
 class UserViewSet(ModelViewSet):
-
     serializer_class=serializer.BaseUserSerializer
     queryset=models.BaseUser.objects.select_related('departman').all()
 
@@ -28,9 +28,10 @@ class LetterViewSet(ModelViewSet):
         .select_related('departman')\
         .select_related('sender')\
         .select_related('receiver').all()
+        
     serializer_class=serializer.LetterSerializer
     filter_backends=[DjangoFilterBackend]
-    filterset_fields=['sender','receiver','departman']
+    filterset_fields=['sender','receiver','status','departman']
     
 
 
@@ -61,6 +62,10 @@ class CommentViewSet(ModelViewSet):
 class HistoryViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated,permissions.HistoryPermission]
     serializer_class=serializer.History
+    filter_backends=[SearchFilter]
+    
+    search_fields=['title']
+    
     queryset=models.History.objects\
         .prefetch_related('history_file')\
         .select_related('owner')\
