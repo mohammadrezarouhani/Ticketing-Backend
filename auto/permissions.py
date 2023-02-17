@@ -4,7 +4,7 @@ import pdb
 class LetterPermission(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        return obj.owner==request.user or obj.departman == request.user.departman
+        return obj.sender==request.user or obj.receiver==request.user or obj.departman == request.user.departman
 
 
 class LetterMessagePermission(permissions.BasePermission):

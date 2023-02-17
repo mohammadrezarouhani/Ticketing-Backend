@@ -5,50 +5,33 @@ from rest_framework import generics,status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 from . import permissions,serializer,models
 import pdb
 
 
 class UserViewSet(ModelViewSet):
+
     serializer_class=serializer.BaseUserSerializer
-    queryset=models.BaseUser.objects.all()
+    queryset=models.BaseUser.objects.select_related('departman').all()
 
     def get_permissions(self):
         if not self.request.method == 'POST':
             self.permission_classes=[IsAuthenticated,]
         return super().get_permissions()
 
-    def create(self,request,*args,**kwargs):
-        sre=self.get_serializer(data=request.data)
-
-        if(sre.is_valid()):
-            sre.save()
-            return Response(sre.data,status=status.HTTP_201_CREATED)
-        
-        return Response(sre.errors,status=status.HTTP_201_CREATED)
-
 
 class LetterViewSet(ModelViewSet):
     http_method_names=['get','put','delete']
     permission_classes=[IsAuthenticated,permissions.LetterPermission]
+    queryset=models.Letter.objects\
+        .select_related('departman')\
+        .select_related('sender')\
+        .select_related('receiver').all()
     serializer_class=serializer.LetterSerializer
-    queryset=models.Letter.objects.all()
-
-    def list(self, request, *args, **kwargs):
-        data =self.get_queryset()
-
-        owner_id=self.request.query_params.get('owner','')
-        departman_id=self.request.query_params.get('departman','')
-        title=self.request.query_params.get('title','')
-
-        if (owner_id or departman_id) :
-            data=data.filter(Q(owner__id=owner_id)|Q(departman__id=departman_id))
-            if title:
-                data=data.filter(title__contains=title)
-            sre=self.get_serializer(data,many=True)
-            return Response(data=sre.data,status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    filter_backends=[DjangoFilterBackend]
+    filterset_fields=['sender','receiver','departman']
+    
 
 
 class InitialLetterViewSet(ModelViewSet):
@@ -78,7 +61,10 @@ class CommentViewSet(ModelViewSet):
 class HistoryViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated,permissions.HistoryPermission]
     serializer_class=serializer.History
-    queryset=models.History.objects.all()
+    queryset=models.History.objects\
+        .prefetch_related('history_file')\
+        .select_related('owner')\
+        .select_related('departman').all()
 
 
 
@@ -145,7 +131,7 @@ class CommentStatusView(generics.UpdateAPIView,):
 
 class TokenDetailView(generics.ListAPIView):
     permission_classes=[IsAuthenticated]
-    queryset=models.BaseUser.objects.all
+    queryset=models.BaseUser.objects.select_related('departman').all()
     serializer_class=serializer.BaseUserSerializer
 
     def list(self, request, *args, **kwargs):

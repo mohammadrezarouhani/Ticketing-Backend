@@ -39,7 +39,7 @@ class AutoTestCases(APITestCase):
             "last_name": "test",
             "departman":self.departman_obj.id,
             "phone":"+9151452125",
-            "password": "test",
+            "password": "mrcs.0101",
             "rank": "STF"
         }
 
@@ -64,15 +64,17 @@ class AutoTestCases(APITestCase):
         self.letter_json={
             "priority": "H",
             'title':"test",
-            "owner": "HEz8lFVC",
-            "departman": "0bE1T8Gd"
+            "sender": self.user_obj.id,
+            "receiver": self.user_obj.id,
+            "departman": self.departman_obj.id
         }
 
         self.letter_json_obj={
             "id": "V3omNvMn",
             'title':"test",
             "priority": "H",
-            "owner": self.user_obj,
+            "sender": self.user_obj,
+            "receiver": self.user_obj,
             "departman": self.departman_obj
         }
 
@@ -82,7 +84,8 @@ class AutoTestCases(APITestCase):
             "id": self.letter_obj.id,
             'title':"test edited",
             "priority": "H",
-            "owner": self.user_obj.id,
+            "sender": self.user_obj.id,
+            "receiver": self.user_obj.id,
             "departman": self.departman_obj.id
         }
 
@@ -100,7 +103,8 @@ class AutoTestCases(APITestCase):
             ],
             "title":"test",
             "priority": "M",
-            "owner": self.user_obj.id,
+            "sender": self.user_obj.id,
+            "receiver": self.user_obj.id,
             "departman": self.departman_obj.id
         }
 

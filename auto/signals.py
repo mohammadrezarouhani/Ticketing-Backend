@@ -21,13 +21,13 @@ def on_delete_message(sender,instance,using,*args,**kwargs):
         user.save()
 
 
-@receiver(pre_delete,sender=models.CommentFile)
-def on_delete_message_file(sender,instance,using,*args,**kwargs):
-    if os.path.exists(instance.image.path):
-        os.remove(instance.image.path)
+# @receiver(pre_delete,sender=models.CommentFile)
+# def on_delete_message_file(sender,instance,using,*args,**kwargs):
+#     if os.path.exists(instance.image.path):
+#         os.remove(instance.image.path)
 
 
-@receiver(pre_delete,sender=get_user_model())
-def on_delete_user(sender,instance,*args,**kwargs):
-    if os.path.exists(instance.image.path):
-        os.remove(instance.image.path)
+# @receiver(pre_delete,sender=get_user_model())
+# def on_delete_user(sender,instance,*args,**kwargs):
+#     if os.path.exists(instance.image.path):
+#         os.remove(instance.image.path)
