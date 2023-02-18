@@ -1,0 +1,1424 @@
+openapi: 3.0.3
+info:
+  title: Your Project API
+  version: 1.0.0
+  description: Your project description
+paths:
+  /auto/change-password/{id}/:
+    put:
+      operationId: auto_change_password_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangePassword'
+          description: ''
+    patch:
+      operationId: auto_change_password_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedChangePassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedChangePassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedChangePassword'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangePassword'
+          description: ''
+  /auto/comment/:
+    get:
+      operationId: auto_comment_list
+      parameters:
+      - in: query
+        name: letter
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - SN
+          - US
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+          description: ''
+    post:
+      operationId: auto_comment_create
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+  /auto/comment-status/{id}/:
+    put:
+      operationId: auto_comment_status_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentStatus'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CommentStatus'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CommentStatus'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentStatus'
+          description: ''
+    patch:
+      operationId: auto_comment_status_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentStatus'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentStatus'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentStatus'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentStatus'
+          description: ''
+  /auto/comment/{id}/:
+    get:
+      operationId: auto_comment_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this comment.
+        required: true
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+    put:
+      operationId: auto_comment_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this comment.
+        required: true
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+    patch:
+      operationId: auto_comment_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this comment.
+        required: true
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedComment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedComment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedComment'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+    delete:
+      operationId: auto_comment_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this comment.
+        required: true
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /auto/departman/:
+    get:
+      operationId: auto_departman_list
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Departman'
+          description: ''
+  /auto/departman/{id}/:
+    get:
+      operationId: auto_departman_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this departman.
+        required: true
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Departman'
+          description: ''
+  /auto/history/:
+    get:
+      operationId: auto_history_list
+      parameters:
+      - in: query
+        name: departman
+        schema:
+          type: string
+      - in: query
+        name: owner
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/History'
+          description: ''
+    post:
+      operationId: auto_history_create
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/History'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/History'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/History'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/History'
+          description: ''
+  /auto/history/{id}/:
+    get:
+      operationId: auto_history_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this history.
+        required: true
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/History'
+          description: ''
+    put:
+      operationId: auto_history_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this history.
+        required: true
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/History'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/History'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/History'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/History'
+          description: ''
+    patch:
+      operationId: auto_history_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this history.
+        required: true
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedHistory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedHistory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedHistory'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/History'
+          description: ''
+    delete:
+      operationId: auto_history_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this history.
+        required: true
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /auto/initial-letter/:
+    get:
+      operationId: auto_initial_letter_list
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InitialLetter'
+          description: ''
+    post:
+      operationId: auto_initial_letter_create
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitialLetter'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/InitialLetter'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/InitialLetter'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitialLetter'
+          description: ''
+  /auto/initial-letter/{id}/:
+    get:
+      operationId: auto_initial_letter_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this letter.
+        required: true
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitialLetter'
+          description: ''
+  /auto/letter/:
+    get:
+      operationId: auto_letter_list
+      parameters:
+      - in: query
+        name: departman
+        schema:
+          type: string
+      - in: query
+        name: receiver
+        schema:
+          type: string
+      - in: query
+        name: sender
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - c
+          - o
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Letter'
+          description: ''
+  /auto/letter/{id}/:
+    get:
+      operationId: auto_letter_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this letter.
+        required: true
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Letter'
+          description: ''
+    put:
+      operationId: auto_letter_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this letter.
+        required: true
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Letter'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Letter'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Letter'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Letter'
+          description: ''
+    delete:
+      operationId: auto_letter_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this letter.
+        required: true
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /auto/token-detail/:
+    get:
+      operationId: auto_token_detail_list
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BaseUser'
+          description: ''
+  /auto/token-obtain/:
+    post:
+      operationId: auto_token_obtain_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /auto/token-refresh/:
+    post:
+      operationId: auto_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /auto/user/:
+    get:
+      operationId: auto_user_list
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BaseUser'
+          description: ''
+    post:
+      operationId: auto_user_create
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BaseUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BaseUser'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseUser'
+          description: ''
+  /auto/user/{id}/:
+    get:
+      operationId: auto_user_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this user.
+        required: true
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseUser'
+          description: ''
+    put:
+      operationId: auto_user_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this user.
+        required: true
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BaseUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BaseUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BaseUser'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseUser'
+          description: ''
+    patch:
+      operationId: auto_user_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this user.
+        required: true
+      tags:
+      - auto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBaseUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBaseUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBaseUser'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseUser'
+          description: ''
+    delete:
+      operationId: auto_user_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this user.
+        required: true
+      tags:
+      - auto
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /file/file-upload/:
+    post:
+      operationId: file_file_upload_create
+      tags:
+      - file
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    BaseUser:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        has_message:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone:
+          type: string
+          pattern: ^\+?1?\d{9,15}$
+          maxLength: 15
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          maxLength: 128
+        departman:
+          type: string
+          nullable: true
+        departman_detail:
+          allOf:
+          - $ref: '#/components/schemas/Departman'
+          readOnly: true
+        rank:
+          $ref: '#/components/schemas/RankEnum'
+      required:
+      - departman_detail
+      - email
+      - has_message
+      - id
+      - password
+      - username
+    ChangePassword:
+      type: object
+      properties:
+        old_password:
+          type: string
+          maxLength: 115
+        new_password:
+          type: string
+          maxLength: 115
+      required:
+      - new_password
+      - old_password
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        comment_file:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentFileserializer'
+        departman_detail:
+          allOf:
+          - $ref: '#/components/schemas/Departman'
+          readOnly: true
+        letter_detail:
+          allOf:
+          - $ref: '#/components/schemas/SimpleLetter'
+          readOnly: true
+        sender_detail:
+          allOf:
+          - $ref: '#/components/schemas/SimpleBaseUser'
+          readOnly: true
+        receiver_detail:
+          allOf:
+          - $ref: '#/components/schemas/SimpleBaseUser'
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/CommentStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        letter:
+          type: string
+          nullable: true
+        sender:
+          type: string
+        receiver:
+          type: string
+      required:
+      - comment_file
+      - created_at
+      - departman_detail
+      - description
+      - id
+      - letter_detail
+      - receiver
+      - receiver_detail
+      - sender
+      - sender_detail
+      - status
+      - title
+    CommentFileserializer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        file:
+          type: string
+          maxLength: 512
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        comment:
+          type: string
+      required:
+      - created_at
+      - file
+      - id
+    CommentStatus:
+      type: object
+      properties:
+        comment_id:
+          type: string
+        date:
+          type: string
+          format: date-time
+      required:
+      - comment_id
+      - date
+    CommentStatusEnum:
+      enum:
+      - SN
+      - US
+      type: string
+    Departman:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+      required:
+      - id
+      - title
+    FileHistory:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        file:
+          type: string
+          maxLength: 512
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        history:
+          type: string
+      required:
+      - created_at
+      - file
+      - id
+    History:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        history_file:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileHistory'
+          nullable: true
+        owner_detail:
+          allOf:
+          - $ref: '#/components/schemas/SimpleBaseUser'
+          readOnly: true
+        departman_detail:
+          allOf:
+          - $ref: '#/components/schemas/Departman'
+          readOnly: true
+        title:
+          type: string
+          maxLength: 115
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        owner:
+          type: string
+        departman:
+          type: string
+      required:
+      - created_at
+      - departman
+      - departman_detail
+      - description
+      - history_file
+      - id
+      - owner
+      - owner_detail
+      - title
+    InitialLetter:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        comment:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+          nullable: true
+        title:
+          type: string
+          maxLength: 255
+        priority:
+          $ref: '#/components/schemas/PriorityEnum'
+        status:
+          $ref: '#/components/schemas/Status84aEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        sender:
+          type: string
+        receiver:
+          type: string
+        departman:
+          type: string
+          nullable: true
+      required:
+      - comment
+      - created_at
+      - id
+      - receiver
+      - sender
+      - title
+    Letter:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        departman_detail:
+          allOf:
+          - $ref: '#/components/schemas/Departman'
+          readOnly: true
+        sender_detail:
+          allOf:
+          - $ref: '#/components/schemas/SimpleBaseUser'
+          readOnly: true
+        receiver_detail:
+          allOf:
+          - $ref: '#/components/schemas/SimpleBaseUser'
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        priority:
+          $ref: '#/components/schemas/PriorityEnum'
+        status:
+          $ref: '#/components/schemas/Status84aEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        sender:
+          type: string
+        receiver:
+          type: string
+        departman:
+          type: string
+          nullable: true
+      required:
+      - created_at
+      - departman_detail
+      - id
+      - receiver
+      - receiver_detail
+      - sender
+      - sender_detail
+      - title
+    PatchedBaseUser:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        has_message:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone:
+          type: string
+          pattern: ^\+?1?\d{9,15}$
+          maxLength: 15
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          maxLength: 128
+        departman:
+          type: string
+          nullable: true
+        departman_detail:
+          allOf:
+          - $ref: '#/components/schemas/Departman'
+          readOnly: true
+        rank:
+          $ref: '#/components/schemas/RankEnum'
+    PatchedChangePassword:
+      type: object
+      properties:
+        old_password:
+          type: string
+          maxLength: 115
+        new_password:
+          type: string
+          maxLength: 115
+    PatchedComment:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        comment_file:
+          type: array
+          items:
+            $ref: '#/components/schemas/CommentFileserializer'
+        departman_detail:
+          allOf:
+          - $ref: '#/components/schemas/Departman'
+          readOnly: true
+        letter_detail:
+          allOf:
+          - $ref: '#/components/schemas/SimpleLetter'
+          readOnly: true
+        sender_detail:
+          allOf:
+          - $ref: '#/components/schemas/SimpleBaseUser'
+          readOnly: true
+        receiver_detail:
+          allOf:
+          - $ref: '#/components/schemas/SimpleBaseUser'
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/CommentStatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        letter:
+          type: string
+          nullable: true
+        sender:
+          type: string
+        receiver:
+          type: string
+    PatchedCommentStatus:
+      type: object
+      properties:
+        comment_id:
+          type: string
+        date:
+          type: string
+          format: date-time
+    PatchedHistory:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        history_file:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileHistory'
+          nullable: true
+        owner_detail:
+          allOf:
+          - $ref: '#/components/schemas/SimpleBaseUser'
+          readOnly: true
+        departman_detail:
+          allOf:
+          - $ref: '#/components/schemas/Departman'
+          readOnly: true
+        title:
+          type: string
+          maxLength: 115
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        owner:
+          type: string
+        departman:
+          type: string
+    PriorityEnum:
+      enum:
+      - H
+      - M
+      - L
+      type: string
+    RankEnum:
+      enum:
+      - MAN
+      - SUP
+      - STF
+      type: string
+    SimpleBaseUser:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        phone:
+          type: string
+          pattern: ^\+?1?\d{9,15}$
+          maxLength: 15
+      required:
+      - email
+      - id
+      - username
+    SimpleLetter:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+      required:
+      - id
+      - title
+    Status84aEnum:
+      enum:
+      - c
+      - o
+      type: string
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

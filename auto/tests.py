@@ -18,6 +18,7 @@ class AutoTestCases(APITestCase):
             'title':'test',
             'description':'test'
         }
+        
         self.departman_obj=models.Departman.objects.create(**self.departman_json_obj)
 
         # User Data
@@ -86,7 +87,8 @@ class AutoTestCases(APITestCase):
             "priority": "H",
             "sender": self.user_obj.id,
             "receiver": self.user_obj.id,
-            "departman": self.departman_obj.id
+            "departman": self.departman_obj.id,
+            "password":""
         }
 
         # Initial letter 
@@ -183,7 +185,9 @@ class AutoTestCases(APITestCase):
         self.token_obtain_url=reverse('token-obtain')
         self.token_refresh_url=reverse('token-refresh')
         self.user_list_url=reverse('user-list')
+        self.user_create_url=reverse('user-create-list')
         self.user_detail_url=reverse('user-detail',kwargs={'pk':self.user_obj.id})
+        self.user_update_url=reverse('user-update-detail',kwargs={'pk':self.user_obj.id})
         self.change_password_url=reverse('change-password',kwargs={'pk':self.user_obj.id})
         self.departman_list_url=reverse('departman-list')
         self.letter_list_url=reverse('letter-list')+"?owner={}".format(self.user_obj.id)
@@ -210,10 +214,24 @@ class AutoTestCases(APITestCase):
         return super().setUp()
 
     def test_create_user(self):
-        response=self.client.post(self.user_list_url,data=self.user_json,format='json')
+        response=self.client.post(self.user_create_url,data=self.user_json,format='json')
         self.assertEqual(response.status_code,status.HTTP_201_CREATED)
         self.assertTrue(models.BaseUser.objects.filter(id=response.data.get('id')).exists())
+        cridential_data={
+            'username':self.user_json.get('username'),
+            'password':self.user_json.get('password')
+        }
+        response=self.client.post(self.token_obtain_url,data=cridential_data) 
+        self.client.credentials(HTTP_AUTHORIZATION="Bearer {}".format(response.data.get('access')))
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertTrue(response.data)
 
+    def test_update_user(self):
+        response=self.client.put(self.user_update_url,data=self.edited_user_json,format='json')
+        self.assertEqual(response.status_code,status.HTTP_200_OK)
+        self.assertTrue(models.BaseUser.objects.filter(id=response.data.get('id')).exists())
+
+        
     def test_change_password(self):
         response=self.client.put(self.change_password_url,self.change_pass_json,format='json')
         self.assertEqual(response.status_code,status.HTTP_200_OK)

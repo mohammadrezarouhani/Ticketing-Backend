@@ -2,7 +2,13 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import generics,status
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.mixins import (CreateModelMixin,
+                                   UpdateModelMixin,
+                                   DestroyModelMixin,
+                                   RetrieveModelMixin,
+                                   ListModelMixin
+                                   )
+from rest_framework.viewsets import ModelViewSet,GenericViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
@@ -12,13 +18,21 @@ import pdb
 
 
 class UserViewSet(ModelViewSet):
+    http_method_names=['get','delete']
     serializer_class=serializer.BaseUserSerializer
     queryset=models.BaseUser.objects.select_related('departman').all()
 
-    def get_permissions(self):
-        if not self.request.method == 'POST':
-            self.permission_classes=[IsAuthenticated,]
-        return super().get_permissions()
+
+class UserUpdateView(ModelViewSet):
+    http_method_names=['put']
+    serializer_class=serializer.UpdateUserSerializer
+    queryset=models.BaseUser.objects.select_related('departman').all()      
+    
+    
+class UserCreateView(ModelViewSet):
+    http_method_names=['post']
+    serializer_class=serializer.CreateUserSerializer
+    queryset=models.BaseUser.objects.select_related('departman').all()       
 
 
 class LetterViewSet(ModelViewSet):

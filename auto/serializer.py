@@ -1,9 +1,7 @@
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from .import models
 import pdb
-
 
 class DepartmanSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,27 +18,36 @@ class SimpleLetterSerializer(serializers.ModelSerializer):
 class BaseUserSerializer(serializers.ModelSerializer):
     departman_detail=DepartmanSerializer(source='departman',read_only=True)
     has_message=serializers.ReadOnlyField()
+    password=serializers.CharField(max_length=512,allow_null=True)
     
     class Meta:
         model = models.BaseUser
         fields = ['id','has_message','first_name','last_name',
                   'phone','username','email','password','departman','departman_detail','rank']
     
-    def update(self, instance, validated_data):
-        super().update(instance,validated_data)
-        user=get_object_or_404(models.BaseUser,id=instance.id)
-        new_password=validated_data.get('password')
-        user.set_password(new_password)
-        user.save()
-        return user
+    def create(self, validated_data):
+        validated_data['password']=make_password(self.validated_data['password'])
+        return super().create(validated_data)
+
+
+class CreateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.BaseUser
+        fields = ['id','first_name','last_name',
+                  'phone','username','email','password','departman','rank']
     
     def create(self, validated_data):
-        user=models.BaseUser.objects.create(**validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
-
-
+        validated_data['password']=make_password(self.validated_data['password'])
+        return super().create(validated_data)
+   
+    
+class UpdateUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.BaseUser
+        fields = ['id','first_name','last_name',
+                  'phone','username','email','departman','rank']
+    
+    
 class SimpleBaseUserSerializer(serializers.ModelSerializer):
     class Meta:
         model=models.BaseUser
