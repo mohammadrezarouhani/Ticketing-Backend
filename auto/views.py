@@ -34,7 +34,6 @@ class LetterViewSet(ModelViewSet):
     filterset_fields=['sender','receiver','status','departman']
     
 
-
 class InitialLetterViewSet(ModelViewSet):
     http_method_names=['post','get']
     permission_classes=[IsAuthenticated,permissions.LetterPermission]
@@ -46,31 +45,21 @@ class CommentViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated,permissions.LetterMessagePermission]
     serializer_class=serializer.CommentSerializer
     queryset=models.Comment.objects.all()
-
-    def list(self, request, *args, **kwargs):
-        data =self.get_queryset()
-        letter_id=self.request.query_params.get('letter','')
-
-        if letter_id :
-            data=data.filter(letter__id=letter_id)
-            sre=self.get_serializer(data,many=True)
-            return Response(data=sre.data,status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
+    filter_backends=[DjangoFilterBackend]
+    filterset_fields=['letter','status']
+    
 
 class HistoryViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated,permissions.HistoryPermission]
     serializer_class=serializer.History
-    filter_backends=[SearchFilter]
-    
+    filter_backends=[DjangoFilterBackend,SearchFilter]
+    filterset_fields=['owner','departman']
     search_fields=['title']
     
     queryset=models.History.objects\
         .prefetch_related('history_file')\
         .select_related('owner')\
         .select_related('departman').all()
-
 
 
 class DepartmanViewSet(ModelViewSet):

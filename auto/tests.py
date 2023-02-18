@@ -112,7 +112,7 @@ class AutoTestCases(APITestCase):
         self.comment_json={
             "title": "test",
             "description": "test",
-            "status": "US",
+            "status": "SN",
             "letter": self.letter_obj.id,
             "sender": self.user_obj.id,
             "receiver": self.user_obj.id,

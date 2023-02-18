@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auto', '0004_alter_baseuser_phone_alter_comment_letter_and_more'),
+        ('auto', '0003_baseuser_phone'),
     ]
 
     operations = [

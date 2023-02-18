@@ -9,19 +9,6 @@ def get_random_id():
     random.shuffle(id)
     return ''.join(id)
 
-def get_image_path(model,filename):
-    date_moth=datetime.datetime.now().strftime('%h-%Y')
-    date_day=datetime.datetime.now().strftime(r"%d-%H-%M-%S")
-    
-    if isinstance(model,BaseUser):
-        folder_name= 'user_file'
-    elif isinstance(model,FileHistory):
-        folder_name= 'history_file'
-    else:
-        folder_name= 'content_file'
-
-    folder_name=os.path.join(folder_name,date_moth)
-    return os.path.join(folder_name,date_day+pathlib.Path(filename).suffix)
 
 
 class BaseUser(AbstractUser):

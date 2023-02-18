@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auto', '0002_comment_remove_departman_user_baseuser_departman_and_more'),
+        ('auto', '0001_initial'),
     ]
 
     operations = [
