@@ -1,20 +1,12 @@
-from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import generics,status
-from rest_framework.mixins import (CreateModelMixin,
-                                   UpdateModelMixin,
-                                   DestroyModelMixin,
-                                   RetrieveModelMixin,
-                                   ListModelMixin
-                                   )
-from rest_framework.viewsets import ModelViewSet,GenericViewSet
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from . import permissions,serializer,models
-import pdb
 
 
 class UserViewSet(ModelViewSet):
@@ -62,7 +54,7 @@ class CommentViewSet(ModelViewSet):
     filter_backends=[DjangoFilterBackend]
     filterset_fields=['letter','status']
     
-
+    
 class HistoryViewSet(ModelViewSet):
     permission_classes=[IsAuthenticated,permissions.HistoryPermission]
     serializer_class=serializer.History
