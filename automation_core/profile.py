@@ -1,6 +1,9 @@
 import os 
+profile=os.environ.get('profile','dev')
 
-setting_module=os.environ.get('DJANGO_SETTINGS_MODULE')
-
-if not setting_module:
+if profile=='prod':
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE','automation_core.settings.prod')
+elif profile=='dev':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE','automation_core.settings.dev')
+elif profile=='test':
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE','automation_core.settings.test')
