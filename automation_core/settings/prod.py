@@ -6,6 +6,7 @@ env.read_env(os.path.join(BASE_DIR,'environment','prod.env'))
 
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = bool(int(env('DEBUG')))
+DEBUG=True
 
 ALLOWED_HOSTS = env('ALLOWED_HOST').replace(' ','').split(',')
 CORS_ALLOWED_ORIGINS = env('ALLOWED_ORIGIN').replace(' ','').split(',')
