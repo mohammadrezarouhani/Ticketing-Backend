@@ -14,7 +14,7 @@ from .docs import letter_list_description
 
 class UserViewSet(ModelViewSet):
     http_method_names=['get','delete']
-    # permission_classes=[IsAuthenticated]
+    permission_classes=[IsAuthenticated]
     serializer_class=serializer.BaseUserSerializer
     queryset=models.BaseUser.objects.select_related('departman').all()
 
@@ -36,7 +36,7 @@ class UserCreateView(ModelViewSet):
 @extend_schema_view(list=extend_schema(description=letter_list_description))
 class LetterViewSet(ModelViewSet):
     http_method_names=['get','put','delete']
-    # permission_classes=[IsAuthenticated,permissions.LetterPermission]
+    permission_classes=[IsAuthenticated,permissions.LetterPermission]
     queryset=models.Letter.objects\
         .select_related('departman')\
         .select_related('sender')\
