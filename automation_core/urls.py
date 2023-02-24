@@ -27,17 +27,17 @@ urlpatterns = [
     path('file/',include('file.urls')),
 ]
 
-django_doc_urlpatterns=[
-    path('doc/',include_docs_urls(title="Automation")),
-    path('schema',get_schema_view(
-        title="Automation App",
-        description="Api for ticketing app",
-        version="1.0.0",
-        )
-        ,name="automation-api"
-    ),    
-]
-
+# django_doc_urlpatterns=[
+#     path('doc/',include_docs_urls(title="Automation")),
+#     path('schema',get_schema_view(
+#         title="Automation App",
+#         description="Api for ticketing app",
+#         version="1.0.0",
+#         )
+#         ,name="automation-api"
+#     ),    
+# ]
+ 
 spectacular_urlpatterns=[
     path('schema/',SpectacularAPIView.as_view(),name='schema'),
     path('doc/',SpectacularSwaggerView.as_view(url_name='schema'),name='doc')
