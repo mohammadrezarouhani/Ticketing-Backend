@@ -11,3 +11,13 @@ letter_list_description='''
                         host/auto/letter/?sender=<user_id>&?reciever=<reciver_id>&?departman=<departman_id>&?status=<o|c> 
                         ==> sender OR reciver AND departman AND status
                         '''
+
+
+user_list_description='''
+                                    <<this api giving the users to us there is 3 parameter you can pass>>
+                                    
+                        host/auto/letter/?username=<>&lastname=<>&firstname=<>   
+
+                        if we pass username and lastname and firstname or any combination of this 
+                        backend perform OR query filter for each of them we pass 
+'''

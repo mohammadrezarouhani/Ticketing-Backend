@@ -9,15 +9,26 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from drf_spectacular.utils import extend_schema_view,extend_schema
 from . import permissions,serializer,models
-from .docs import letter_list_description
+from .docs import letter_list_description,user_list_description
 
-
+@extend_schema_view(list=extend_schema(description=user_list_description))
 class UserViewSet(ModelViewSet):
     http_method_names=['get','delete']
     permission_classes=[IsAuthenticated]
     serializer_class=serializer.BaseUserSerializer
     queryset=models.BaseUser.objects.select_related('departman').all()
 
+    def get_queryset(self):
+        queryset:models.BaseUser=self.get_queryset()
+        username=self.request.queryparams.get('username')
+        firstname=self.request.queryparams.get('firstname')
+        lastname=self.request.queryparams.get('lastname')
+
+        if username or firstname or lastname:
+            queryset=queryset.filter(Q(username__icontains=username)|
+                                    Q(firstname__icontains=firstname)|
+                                    Q(lastname__icontains=lastname))
+        return queryset
 
 class UserUpdateView(ModelViewSet):
     http_method_names=['put']
