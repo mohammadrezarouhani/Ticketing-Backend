@@ -30,6 +30,7 @@ class UserViewSet(ModelViewSet):
                                     Q(lastname__icontains=lastname))
         return queryset
 
+
 class UserUpdateView(ModelViewSet):
     http_method_names=['put']
     permission_classes=[IsAuthenticated]
@@ -47,7 +48,7 @@ class UserCreateView(ModelViewSet):
 @extend_schema_view(list=extend_schema(description=letter_list_description))
 class LetterViewSet(ModelViewSet):
     http_method_names=['get','put','delete']
-    permission_classes=[IsAuthenticated,permissions.LetterPermission]
+    # permission_classes=[IsAuthenticated,permissions.LetterPermission]
     queryset=models.Letter.objects\
         .select_related('departman')\
         .select_related('sender')\
@@ -57,11 +58,16 @@ class LetterViewSet(ModelViewSet):
     serializer_class=serializer.LetterSerializer
     
     def get_queryset(self):
-        queryset=super().get_queryset()
+        queryset=models.Letter.objects\
+        .select_related('departman')\
+        .select_related('sender')\
+        .select_related('receiver').all()
+        
         sender=self.request.query_params.get('sender')
         receiver=self.request.query_params.get('receiver')
         departman=self.request.query_params.get('departman')
         status=self.request.query_params.get('status')
+        
         if sender:
             queryset=queryset.filter(Q(sender=sender))
         elif receiver:
@@ -72,8 +78,8 @@ class LetterViewSet(ModelViewSet):
             queryset=queryset.filter(Q(departman=departman))
         elif status:
             queryset=queryset.filter(Q(status=status))
-        else:
-            return queryset
+        
+        return queryset
 
 
 class InitialLetterViewSet(ModelViewSet):
