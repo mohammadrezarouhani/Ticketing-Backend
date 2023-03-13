@@ -21,6 +21,8 @@ from rest_framework.schemas import get_schema_view
 from rest_framework.documentation import include_docs_urls
 from drf_spectacular.views import SpectacularAPIView,SpectacularSwaggerView
 
+admin.site.site_header="Automation Admin"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auto/', include('auto.urls')),
