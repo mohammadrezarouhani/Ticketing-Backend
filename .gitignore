@@ -6,3 +6,4 @@ static_file
 __pycache__
 venv
 static
+*.pyc
