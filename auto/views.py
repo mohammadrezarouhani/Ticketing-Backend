@@ -21,9 +21,9 @@ class UserViewSet(ModelViewSet):
 
     def get_queryset(self):
         queryset:models.BaseUser=super().get_queryset()
-        username=self.request.queryparams.get('username')
-        firstname=self.request.queryparams.get('firstname')
-        lastname=self.request.queryparams.get('lastname')
+        username=self.request.query_params.get('username')
+        firstname=self.request.query_params.get('firstname')
+        lastname=self.request.query_params.get('lastname')
 
         if username or firstname or lastname:
             queryset=queryset.filter(Q(username__icontains=username)|
