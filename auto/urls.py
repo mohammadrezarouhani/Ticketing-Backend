@@ -6,9 +6,6 @@ from . import views
 
 
 router=DefaultRouter()
-router.register(r'user',views.UserViewSet,basename='user')
-router.register(r'user-update',views.UserUpdateView,basename='user-update')
-router.register(r'user-create',views.UserCreateView,basename='user-create')
 router.register(r'letter',views.LetterViewSet,basename='letter')
 router.register(r'initial-letter',views.InitialLetterViewSet,basename='initial-letter')
 router.register(r'departman',views.DepartmanViewSet,basename='departman')
@@ -17,10 +14,5 @@ router.register(r'history',views.HistoryViewSet,basename='history')
 
 
 urlpatterns=[
-    path('token-obtain/',TokenObtainPairView.as_view(),name='token-obtain'),
-    path('token-detail/',views.TokenDetailView.as_view(),name='token-detail'),
-    path('token-refresh/',TokenRefreshView.as_view(),name='token-refresh'),
-    path('change-password/<str:pk>/',views.ChangePasswordView.as_view(),name='change-password'),
-    path('comment-status/<str:pk>/',views.CommentStatusView.as_view(),name='comment-status'),
     path('',include(router.urls),name='user'),
 ]

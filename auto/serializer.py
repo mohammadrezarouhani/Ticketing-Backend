@@ -15,45 +15,6 @@ class SimpleLetterSerializer(serializers.ModelSerializer):
         fields=['id','title']
 
 
-class BaseUserSerializer(serializers.ModelSerializer):
-    departman_detail=DepartmanSerializer(source='departman',read_only=True)
-    has_message=serializers.ReadOnlyField()
-    password=serializers.CharField(max_length=512,allow_null=True)
-    
-    class Meta:
-        model = models.BaseUser
-        fields = ['id','has_message','first_name','last_name',
-                  'phone','username','email','password','departman','departman_detail','rank']
-    
-    def create(self, validated_data):
-        validated_data['password']=make_password(self.validated_data['password'])
-        return super().create(validated_data)
-
-
-class CreateUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.BaseUser
-        fields = ['id','first_name','last_name',
-                  'phone','username','email','password','departman','rank']
-    
-    def create(self, validated_data):
-        validated_data['password']=make_password(self.validated_data['password'])
-        return super().create(validated_data)
-   
-    
-class UpdateUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.BaseUser
-        fields = ['id','first_name','last_name',
-                  'phone','username','email','departman','rank']
-    
-    
-class SimpleBaseUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=models.BaseUser
-        fields=['id','username','email','phone']
-
-
 class FileHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model=models.FileHistory
@@ -62,7 +23,6 @@ class FileHistorySerializer(serializers.ModelSerializer):
 
 class History(serializers.ModelSerializer):
     history_file=FileHistorySerializer(many=True,allow_null=True)
-    owner_detail=SimpleBaseUserSerializer(source='owner',read_only=True)
     departman_detail=DepartmanSerializer(source='departman',read_only=True)
 
     class Meta:
@@ -97,8 +57,6 @@ class CommentFileserializer(serializers.ModelSerializer):
 
 class LetterSerializer(serializers.ModelSerializer):
     departman_detail=DepartmanSerializer(source='departman',read_only=True)
-    sender_detail=SimpleBaseUserSerializer(source='sender',read_only=True)
-    receiver_detail=SimpleBaseUserSerializer(source='receiver',read_only=True)
     
     class Meta:
         model = models.Letter
@@ -109,8 +67,6 @@ class CommentSerializer(serializers.ModelSerializer):
     comment_file=CommentFileserializer(many=True)
     departman_detail=DepartmanSerializer(source='departman',read_only=True)
     letter_detail=SimpleLetterSerializer(source='letter',read_only=True)
-    sender_detail=SimpleBaseUserSerializer(source='sender',read_only=True)
-    receiver_detail=SimpleBaseUserSerializer(source='receiver',read_only=True)
     
     class Meta:
         fields = '__all__'
