@@ -1,13 +1,23 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.core.validators import RegexValidator
-import os,pathlib,random,string,datetime
 from django.conf import settings
 
-def get_random_id():
-    id=random.choices(string.ascii_letters+string.digits,k=8)
-    random.shuffle(id)
-    return ''.join(id)
+
+class Person(models.Model):
+    RANK=[
+        ('chf','chief'),
+        ('man','manager'),
+        ('emp','employee')
+    ]
+
+    CHIEF=('chf','chief')
+    MANAGER=('man','manager')
+    EMPLOYEE=('emp','employee')
+
+    user=models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    departman=models.ForeignKey('Departman',on_delete=models.SET_NULL,null=True)
+    rank=models.CharField(max_length=25,choices=RANK)
+    has_message=models.PositiveIntegerField(default=0)
+    photo=models.CharField(max_length=512)
 
 
 class Departman(models.Model):

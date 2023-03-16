@@ -5,7 +5,7 @@ import pdb
 
 class DepartmanSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = '__all__'
+        fields = ['id','title','description']
         model = models.Departman
 
 
