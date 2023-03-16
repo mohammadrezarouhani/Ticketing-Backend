@@ -20,7 +20,7 @@ class UserViewSet(ModelViewSet):
     queryset=models.BaseUser.objects.select_related('departman').all()
 
     def get_queryset(self):
-        queryset:models.BaseUser=super().get_queryset()
+        queryset=super().get_queryset()
         username=self.request.query_params.get('username')
         firstname=self.request.query_params.get('firstname')
         lastname=self.request.query_params.get('lastname')
