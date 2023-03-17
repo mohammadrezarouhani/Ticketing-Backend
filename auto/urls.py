@@ -1,18 +1,19 @@
 from django.urls import path,include
-from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
+from rest_framework_nested.routers import DefaultRouter,NestedDefaultRouter
 from . import views
 
 
 
-router=DefaultRouter()
-router.register(r'profile',views.ProfileViewset,basename='profile')
-router.register(r'letter',views.LetterViewSet,basename='letter')
-router.register(r'departman',views.DepartmanViewSet,basename='departman')
-router.register(r'comment',views.CommentViewSet,basename='comment')
-router.register(r'history',views.HistoryViewSet,basename='history')
+routers=DefaultRouter()
+routers.register(r'profile',views.ProfileViewset,basename='profile')
+routers.register(r'letter',views.LetterViewset,basename='letter')
+routers.register(r'departman',views.DepartmanViewset,basename='departman')
+routers.register(r'history',views.HistoryViewset,basename='history')
 
+Letter_router=NestedDefaultRouter(routers,'letter',lookup='letter')
+Letter_router.register('comment',views.CommentViewset)
 
 urlpatterns=[
-    path('',include(router.urls),name='user'),
+    path('',include(routers.urls)),
+    path('',include(Letter_router.urls)),
 ]

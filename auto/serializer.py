@@ -60,9 +60,7 @@ class CommentFileserializer(serializers.ModelSerializer):
         model = models.CommentFile
 
 
-class LetterSerializer(serializers.ModelSerializer):
-    departman_detail=DepartmanSerializer(source='departman',read_only=True)
-    
+class LetterSerializer(serializers.ModelSerializer):    
     class Meta:
         model = models.Letter
         fields = '__all__'

@@ -1,3 +1,4 @@
+import pdb
 from .docs import letter_list_description
 from . import permissions, serializer, models
 from rest_framework.viewsets import ModelViewSet
@@ -17,6 +18,7 @@ class ProfileViewset(RetrieveModelMixin,
                      CreateModelMixin,
                      DestroyModelMixin,
                      GenericViewSet):
+    
     permission_classes=[IsAuthenticated]
     queryset = models.Profile.objects.select_related('user').all()
     serializer_class = serializer.ProfileSerializer
@@ -34,67 +36,45 @@ class ProfileViewset(RetrieveModelMixin,
             return Response(sre.data)
 
 
-@extend_schema_view(list=extend_schema(description=letter_list_description))
-class LetterViewSet(ModelViewSet):
-    http_method_names = ['get', 'put', 'delete']
+class LetterViewset(CreateModelMixin,
+                    RetrieveModelMixin,
+                    UpdateModelMixin,
+                    DestroyModelMixin,
+                    GenericViewSet):
     permission_classes = [IsAuthenticated, permissions.LetterPermission]
-    queryset = models.Letter.objects\
-        .select_related('departman')\
-        .select_related('sender')\
-        .select_related('receiver').all()
-
-    filter_backends = [DjangoFilterBackend]
+    queryset = models.Letter.objects.all()
+    filter_backends = [SearchFilter]
+    search_fields = ['title']
     serializer_class = serializer.LetterSerializer
 
-    def get_queryset(self):
-        queryset = super().get_queryset()
-
-        sender = self.request.query_params.get('sender')
-        receiver = self.request.query_params.get('receiver')
-        departman = self.request.query_params.get('departman')
-        status = self.request.query_params.get('status')
-
-        if sender and receiver:
-            queryset = queryset.filter(Q(sender=sender) | Q(receiver=receiver))
-        elif sender:
-            queryset = queryset.filter(Q(sender=sender))
-        elif receiver:
-            queryset = queryset.filter(Q(receiver=receiver))
-        elif departman:
-            queryset = queryset.filter(Q(departman=departman))
-        elif status:
-            queryset = queryset.filter(Q(status=status))
-
-        return queryset
+    @action(detail=False,methods=['GET'])
+    def me(self,request):
+        letters=models.Letter.objects.filter(Q(sender_id=request.user.id)|Q(receiver_id=request.user.id))
+        sre=serializer.LetterSerializer(letters,many=True)
+        return Response(sre.data)
 
 
-class CommentViewSet(ModelViewSet):
+
+class CommentViewset(ModelViewSet):
     permission_classes = [IsAuthenticated, permissions.LetterMessagePermission]
     serializer_class = serializer.CommentSerializer
     queryset = models.Comment.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['letter', 'status']
 
-
-class HistoryViewSet(ModelViewSet):
+        
+class HistoryViewset(ModelViewSet):
     permission_classes = [IsAuthenticated, permissions.HistoryPermission]
     serializer_class = serializer.History
-    filter_backends = [DjangoFilterBackend, SearchFilter]
-    filterset_fields = ['owner', 'departman']
+    filter_backends = [SearchFilter]
     search_fields = ['title']
 
     queryset = models.History.objects.prefetch_related('history_file').all()
 
 
-
-class DepartmanViewSet(ModelViewSet):
+class DepartmanViewset(ModelViewSet):
     permission_classes = [IsAuthenticated,]
     serializer_class = serializer.DepartmanSerializer
     queryset = models.Departman.objects.all()
-
-
-class CommentStatusView(RetrieveModelMixin,GenericViewSet):
-    pass
-    #TODO check acomment status is seen or unseen 
 
 
