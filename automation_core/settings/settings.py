@@ -46,11 +46,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ('JWT',),
-    'ACCESS_TOKEN_LIFETIME':timedelta(days=30),
-    'REFRESH_TOKEN_LIFETIME':timedelta(days=60)
-}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -115,3 +110,17 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL='users.BaseUser'
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT',),
+    'ACCESS_TOKEN_LIFETIME':timedelta(days=30),
+    'REFRESH_TOKEN_LIFETIME':timedelta(days=60)
+}
+
+DJOSER = {
+    'SERIALIZERS': {    
+        'user_create':'users.serializers.BaseUserCreateSerializer',
+        'user': 'users.serializers.BaseUserSerializer',
+        'current_user': 'users.serializers.BaseUserSerializer',
+    },
+}

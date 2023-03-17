@@ -1,12 +1,18 @@
-from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from .import models
-import pdb
+
 
 class DepartmanSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ['id','title','description']
         model = models.Departman
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    has_message=serializers.ReadOnlyField()
+    class Meta:
+        model=models.Profile
+        fields=['id','user_id','departman','rank','has_message','photo']
 
 
 class SimpleLetterSerializer(serializers.ModelSerializer):
@@ -23,7 +29,6 @@ class FileHistorySerializer(serializers.ModelSerializer):
 
 class History(serializers.ModelSerializer):
     history_file=FileHistorySerializer(many=True,allow_null=True)
-    departman_detail=DepartmanSerializer(source='departman',read_only=True)
 
     class Meta:
         fields = '__all__'
@@ -65,8 +70,6 @@ class LetterSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     comment_file=CommentFileserializer(many=True)
-    departman_detail=DepartmanSerializer(source='departman',read_only=True)
-    letter_detail=SimpleLetterSerializer(source='letter',read_only=True)
     
     class Meta:
         fields = '__all__'
@@ -88,31 +91,6 @@ class CommentSerializer(serializers.ModelSerializer):
         for data in comment_file:
             models.CommentFile.objects.create(**data, comment=comment)
         return comment
-
-
-class InitialLetterSerializer(serializers.ModelSerializer):
-    comment=CommentSerializer(many=True,allow_null=True)
-    
-    class Meta:
-        fields='__all__'
-        model=models.Letter
-
-    def create(self, validated_data):
-        comment=validated_data.pop('comment')
-        letter=models.Letter.objects.create(**validated_data)
-        if comment:
-            comment_file=comment[0].pop('comment_file')
-            comment=models.Comment.objects.create(**comment[0],letter=letter)
-
-            for data in comment_file:
-                models.CommentFile.objects.create(**data,comment=comment)
-
-        return letter
-
-
-class ChangePasswordSerializer(serializers.Serializer):
-    old_password=serializers.CharField(max_length=115)
-    new_password=serializers.CharField(max_length=115)
 
 
 class CommentStatusSerializer(serializers.Serializer):

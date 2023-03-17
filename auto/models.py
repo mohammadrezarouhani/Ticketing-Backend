@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 
 
-class Person(models.Model):
+class Profile(models.Model):
     RANK=[
         ('chf','chief'),
         ('man','manager'),
@@ -17,7 +17,7 @@ class Person(models.Model):
     departman=models.ForeignKey('Departman',on_delete=models.SET_NULL,null=True)
     rank=models.CharField(max_length=25,choices=RANK)
     has_message=models.PositiveIntegerField(default=0)
-    photo=models.CharField(max_length=512)
+    photo=models.CharField(max_length=512,blank=True)
 
 
 class Departman(models.Model):
@@ -73,7 +73,7 @@ class Comment(models.Model):
 
     class Meta:
         ordering=['-created_at']
- 
+
 
 class CommentFile(models.Model):
     comment=models.ForeignKey(Comment,on_delete=models.CASCADE,related_name='comment_file',blank=True)
@@ -86,7 +86,7 @@ class CommentFile(models.Model):
     def __str__(self) -> str:
         return self.file+"({})".format(self.id)    
 
-        
+
 class History(models.Model):
     title=models.CharField(max_length=115)
     description=models.TextField()
@@ -99,7 +99,7 @@ class History(models.Model):
 
     def __str__(self) -> str:
         return self.title+"({})".format(self.id)
-    
+
 
 class FileHistory(models.Model):
     history=models.ForeignKey(History,on_delete=models.CASCADE,related_name='history_file',blank=True)
