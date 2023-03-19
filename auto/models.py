@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from . import path_generator as pathes
 
 
 class Profile(models.Model):
@@ -8,7 +9,6 @@ class Profile(models.Model):
         ('man','manager'),
         ('emp','employee')
     ]
-
     CHIEF=('chf','chief')
     MANAGER=('man','manager')
     EMPLOYEE=('emp','employee')
@@ -17,7 +17,7 @@ class Profile(models.Model):
     departman=models.ForeignKey('Departman',on_delete=models.SET_NULL,null=True)
     rank=models.CharField(max_length=25,choices=RANK)
     has_message=models.PositiveIntegerField(default=0)
-    photo=models.CharField(max_length=512,blank=True)
+    photo=models.FileField(upload_to=pathes.profile_image_upload,blank=True,null=True)
 
 
 class Departman(models.Model):
@@ -33,7 +33,6 @@ class Letter(models.Model):
     HIGH=('H','HIGH')
     MEDIUM=('M','MIDIUM')
     LOW=('L','LOW')
-
     STATUS=(('c','close'),('o','open'))
     CLOSE=('c','c')
     OPEN=('o','o')
@@ -54,7 +53,7 @@ class Letter(models.Model):
         ordering=['-created_at']
 
 
-class Comment(models.Model):
+class Message(models.Model):
     STATUS=[('SN','SEEN'),('US','UNSEEN')]
     SEEN=('SN','SEEN')
     UNSEEN=('US','UNSEEN')
@@ -75,9 +74,9 @@ class Comment(models.Model):
         ordering=['-created_at']
 
 
-class CommentFile(models.Model):
-    comment=models.ForeignKey(Comment,on_delete=models.CASCADE,related_name='comment_file',blank=True)
-    file=models.CharField(max_length=512)
+class MessageFile(models.Model):
+    message=models.ForeignKey(Message,on_delete=models.CASCADE,related_name='comment_file',blank=True)
+    file=models.FileField(upload_to=pathes.message_file_upload)
     created_at=models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -87,7 +86,7 @@ class CommentFile(models.Model):
         return self.file+"({})".format(self.id)    
 
 
-class History(models.Model):
+class Archive(models.Model):
     title=models.CharField(max_length=115)
     description=models.TextField()
     owner=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
@@ -101,13 +100,13 @@ class History(models.Model):
         return self.title+"({})".format(self.id)
 
 
-class FileHistory(models.Model):
-    history=models.ForeignKey(History,on_delete=models.CASCADE,related_name='history_file',blank=True)
-    file=models.CharField(max_length=512)
+class ArchiveFile(models.Model):
+    archive=models.ForeignKey(Archive,on_delete=models.CASCADE,related_name='history_file',blank=True)
+    file=models.FileField(upload_to=pathes.archive_file_upload)
     created_at=models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering=['-created_at']
         
     def __str__(self) -> str:
-        return self.file+"({})".format(self.id)
+        return self.file.path+"({})".format(self.id)

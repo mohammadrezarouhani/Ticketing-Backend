@@ -54,23 +54,47 @@ class LetterViewset(CreateModelMixin,
         return Response(sre.data)
 
 
-
-class CommentViewset(ModelViewSet):
+class MessageViewset(ModelViewSet):
     permission_classes = [IsAuthenticated, permissions.LetterMessagePermission]
-    serializer_class = serializer.CommentSerializer
-    queryset = models.Comment.objects.all()
+    serializer_class = serializer.MessageSerializer
+    queryset = models.Message.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['letter', 'status']
 
+    @action(detail=True,methods=['put'],)
+    def status(self,request):
+        pdb.set_trace()
+
+
+class MessageFileViewset(ModelViewSet):
+    queryset=models.MessageFile
+    serializer_class=serializer.MessageFileserializer
+
+    def get_serializer_context(self):
+        return {'message_pk':self.kwargs['message_pk']}
+    
+    def get_queryset(self):
+        return super().get_queryset().filter(message=self.kwargs['message_pk'])
+
         
-class HistoryViewset(ModelViewSet):
+class ArchiveViewset(ModelViewSet):
     permission_classes = [IsAuthenticated, permissions.HistoryPermission]
     serializer_class = serializer.History
     filter_backends = [SearchFilter]
     search_fields = ['title']
+    queryset = models.Archive.objects.all()
 
-    queryset = models.History.objects.prefetch_related('history_file').all()
 
+class ArchiveFileViewset(ModelViewSet):
+    queryset=models.ArchiveFile.objects.all()
+    serializer_class=serializer.ArchiveFileSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().filter(archive_id=self.kwargs.get('archive_pk'))
+
+    def get_serializer_context(self):
+        return {'archive_pk':self.kwargs['archive_pk']}
+    
 
 class DepartmanViewset(ModelViewSet):
     permission_classes = [IsAuthenticated,]

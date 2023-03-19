@@ -5,15 +5,19 @@ from . import views
 
 
 routers=DefaultRouter()
-routers.register(r'profile',views.ProfileViewset,basename='profile')
-routers.register(r'letter',views.LetterViewset,basename='letter')
-routers.register(r'departman',views.DepartmanViewset,basename='departman')
-routers.register(r'history',views.HistoryViewset,basename='history')
+routers.register('profile',views.ProfileViewset,basename='profile')
+routers.register('letter',views.LetterViewset,basename='letter')
+routers.register('departman',views.DepartmanViewset,basename='departman')
+routers.register('archive',views.ArchiveViewset,basename='history')
+routers.register('message',views.MessageViewset,basename='message')
 
-Letter_router=NestedDefaultRouter(routers,'letter',lookup='letter')
-Letter_router.register('comment',views.CommentViewset)
+archive_router=NestedDefaultRouter(routers,'archive',lookup='archive')
+archive_router.register('file',views.ArchiveFileViewset,basename='Archive-file')
+
+message_router=NestedDefaultRouter(routers,'message',lookup='message')
+message_router.register('file',views.MessageFileViewset,basename='message-file')
 
 urlpatterns=[
     path('',include(routers.urls)),
-    path('',include(Letter_router.urls)),
+    path('',include(archive_router.urls)),
 ]

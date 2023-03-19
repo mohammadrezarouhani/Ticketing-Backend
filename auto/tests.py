@@ -132,7 +132,7 @@ class AutoTestCases(APITestCase):
             "receiver": self.user_obj
         }
 
-        self.comment_obj=models.Comment.objects.create(**self.comment_json_obj)
+        self.comment_obj=models.Message.objects.create(**self.comment_json_obj)
 
         self.edited_comment_json={
             "id": self.comment_obj.id,
@@ -167,7 +167,7 @@ class AutoTestCases(APITestCase):
             "departman": self.departman_obj
         }
         
-        self.history_obj=models.History.objects.create(**self.history_json_obj)
+        self.history_obj=models.Archive.objects.create(**self.history_json_obj)
         
         self.history_json_edited={
             "id":self.history_obj.id,
