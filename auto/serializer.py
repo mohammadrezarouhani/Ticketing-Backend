@@ -75,3 +75,12 @@ class MessageSerializer(serializers.ModelSerializer):
         if sender==reciever:
             raise serializers.ValidationError('sender and reciever can not have a same value.')
         return super().validate(attrs)
+
+
+class MessageStatusSerializer(serializers.Serializer):
+    user_id=serializers.IntegerField()
+
+    def validate(self, attrs):
+        if attrs['user_id']<1:
+            raise serializers.ValidationError('user id must be greater than 1')
+        return super().validate(attrs)

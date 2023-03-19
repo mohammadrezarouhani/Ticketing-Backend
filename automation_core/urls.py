@@ -13,7 +13,6 @@ urlpatterns = [
     path('auto/', include('auto.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
-    path('file/',include('file.urls')),
 ]
  
 spectacular_urlpatterns=[

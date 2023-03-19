@@ -16,8 +16,10 @@ archive_router.register('file',views.ArchiveFileViewset,basename='Archive-file')
 
 message_router=NestedDefaultRouter(routers,'message',lookup='message')
 message_router.register('file',views.MessageFileViewset,basename='message-file')
+message_router.register('status',views.MessageStatusViewset,basename='message-status')
 
 urlpatterns=[
     path('',include(routers.urls)),
     path('',include(archive_router.urls)),
+    path('',include(message_router.urls)),
 ]

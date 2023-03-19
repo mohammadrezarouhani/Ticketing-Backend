@@ -1,16 +1,17 @@
 import pdb
-from .docs import letter_list_description
 from . import permissions, serializer, models
 from rest_framework.viewsets import ModelViewSet
 from django.db.models import Q
-from drf_spectacular.utils import extend_schema_view, extend_schema
+from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import get_object_or_404
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.mixins import CreateModelMixin,RetrieveModelMixin,UpdateModelMixin,DestroyModelMixin
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework import status
 
 
 class ProfileViewset(RetrieveModelMixin,
@@ -25,7 +26,7 @@ class ProfileViewset(RetrieveModelMixin,
 
     @action(detail=False,methods=['GET','PUT'])
     def me(self,request):
-        (profile,created)=models.Profile.objects.get_or_create(user_id=request.user.id)
+        profile=get_object_or_404(models.Profile,user_id=request.user.id)
         if request.method=='GET':
             sre=serializer.ProfileSerializer(profile)
             return Response(sre.data)
@@ -60,10 +61,6 @@ class MessageViewset(ModelViewSet):
     queryset = models.Message.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['letter', 'status']
-
-    @action(detail=True,methods=['put'],)
-    def status(self,request):
-        pdb.set_trace()
 
 
 class MessageFileViewset(ModelViewSet):
@@ -102,3 +99,22 @@ class DepartmanViewset(ModelViewSet):
     queryset = models.Departman.objects.all()
 
 
+class MessageStatusViewset(CreateModelMixin,GenericViewSet):
+    serializer_class=serializer.MessageStatusSerializer
+
+    def create(self, request, *args, **kwargs):
+        sre=serializer.MessageStatusSerializer(data=request.data)
+        sre.is_valid(raise_exception=True)
+        user_id=sre.data.get('user_id')
+        message=get_object_or_404(models.Message,id=kwargs['message_pk'])
+        profile=get_object_or_404(models.Profile,user_id=user_id)
+        
+        if message.status=='UN':
+            message.status='SN'
+            profile.has_message-=1
+            message.save()
+            profile.save()
+            return Response('message {} was seen by {}'.format(message.id,user_id))
+        else:
+            return Response(data={'message {}  was seend before by user {} '.format(message.id,user_id)},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)

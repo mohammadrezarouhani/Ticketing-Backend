@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django_filters',
     'users',
     'auto',
-    'file',
+    'auto_custom',
 ]
 
 REST_FRAMEWORK = {
