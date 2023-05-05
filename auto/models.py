@@ -33,6 +33,7 @@ class Letter(models.Model):
     HIGH=('H','HIGH')
     MEDIUM=('M','MIDIUM')
     LOW=('L','LOW')
+   
     STATUS=(('c','close'),('o','open'))
     CLOSE=('c','c')
     OPEN=('o','o')
@@ -47,7 +48,7 @@ class Letter(models.Model):
     updated_at=models.DateTimeField(null=True,blank=True)
 
     def __str__(self) -> str:
-        return "letter"+str(self.title)+" ({})".format(self.id)
+        return "letter"+str(self.title)+"  ({})".format(self.id)
 
     class Meta:
         ordering=['-created_at']
@@ -68,7 +69,7 @@ class Message(models.Model):
     updated_at=models.DateTimeField(null=True,blank=True)
 
     def __str__(self) -> str:
-        return self.title+"({})".format(self.id)
+        return self.title+" ({})".format(self.id)
 
     class Meta:
         ordering=['-created_at']
@@ -83,7 +84,7 @@ class MessageFile(models.Model):
         ordering=['-created_at']
 
     def __str__(self) -> str:
-        return self.file+"({})".format(self.id)    
+        return self.file.url+" ({})".format(self.id)
 
 
 class Archive(models.Model):
@@ -107,6 +108,6 @@ class ArchiveFile(models.Model):
 
     class Meta:
         ordering=['-created_at']
-        
+  
     def __str__(self) -> str:
         return self.file.path+"({})".format(self.id)

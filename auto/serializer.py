@@ -10,9 +10,18 @@ class DepartmanSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     has_message=serializers.ReadOnlyField()
+    departman=DepartmanSerializer()
     class Meta:
         model=models.Profile
         fields=['id','user_id','departman','rank','has_message','photo']
+
+
+class UpdateProfileSerializer(serializers.ModelSerializer):
+    has_message=serializers.ReadOnlyField()
+    class Meta:
+        model=models.Profile
+        fields=['id','user_id','departman','rank','has_message','photo']
+
 
 
 class SimpleLetterSerializer(serializers.ModelSerializer):

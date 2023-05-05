@@ -49,5 +49,5 @@ def on_delete_message_file(sender,instance,using,*args,**kwargs):
 
 @receiver(post_delete,sender=models.ArchiveFile)
 def on_delete_archive_file(sender,instance,using,*args,**kwargs):
-    if os.path.exists(instance.image.path):
+    if os.path.exists(instance.file.path):
         os.remove(instance.file.path)

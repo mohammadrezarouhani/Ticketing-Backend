@@ -7,6 +7,7 @@ from rest_framework.documentation import include_docs_urls
 from drf_spectacular.views import SpectacularAPIView,SpectacularSwaggerView
 
 admin.site.site_header="Automation Admin"
+admin.site.index_title="Admin"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
