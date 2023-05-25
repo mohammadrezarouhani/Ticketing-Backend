@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auto', '0003_rename_person_profile'),
+        ('ticket', '0003_rename_person_profile'),
     ]
 
     operations = [

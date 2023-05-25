@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import sys
-from automation_core.profile import *
+from ticketing_backend.profile import *
 
 def main():
     """Run administrative tasks."""

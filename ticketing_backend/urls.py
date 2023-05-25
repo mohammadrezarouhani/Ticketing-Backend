@@ -11,7 +11,7 @@ admin.site.index_title="Admin"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auto/', include('auto.urls')),
+    path('auto/', include('ticket.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
 ]

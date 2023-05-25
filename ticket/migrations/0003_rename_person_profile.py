@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('auto', '0002_person'),
+        ('ticket', '0002_person'),
     ]
 
     operations = [

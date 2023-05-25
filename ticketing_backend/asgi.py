@@ -1,5 +1,5 @@
 """
-ASGI config for automation_core project.
+ASGI config for ticketing_backend project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

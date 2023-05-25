@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auto', '0006_alter_archivefile_file_alter_messagefile_file_and_more'),
+        ('ticket', '0006_alter_archivefile_file_alter_messagefile_file_and_more'),
     ]
 
     operations = [

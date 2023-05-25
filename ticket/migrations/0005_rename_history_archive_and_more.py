@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('auto', '0004_alter_profile_photo'),
+        ('ticket', '0004_alter_profile_photo'),
     ]
 
     operations = [

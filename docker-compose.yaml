@@ -30,7 +30,7 @@ services:
       - 8000
     ports:
       - "8000:8000"
-    command: ["gunicorn","--bind", "0.0.0.0:8000","automation_core.wsgi:application"]
+    command: ["gunicorn","--bind", "0.0.0.0:8000","ticketing_backend.wsgi:application"]
     depends_on:
         db:
             condition: service_healthy

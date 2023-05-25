@@ -1,10 +1,10 @@
 from django.apps import AppConfig
 
 
-class AutoConfig(AppConfig):
+class TicketConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'auto'
+    name ='ticket'
     
     def ready(self) -> None:
-        import auto.signals
+        import ticket.signals
         return super().ready()

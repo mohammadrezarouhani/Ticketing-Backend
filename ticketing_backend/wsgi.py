@@ -1,5 +1,5 @@
 """
-WSGI config for automation_core project.
+WSGI config for ticketing_backend project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

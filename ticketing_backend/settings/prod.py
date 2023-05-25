@@ -1,4 +1,4 @@
-from automation_core.settings.settings import *
+from ticketing_backend.settings.settings import *
 
 
 env=environ.Env()
